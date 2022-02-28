@@ -1,0 +1,2 @@
+class PinGroupsController < ApplicationController
+end
