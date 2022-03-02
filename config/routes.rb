@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   resources :route_pins
   resources :routes
   resources :pin_groups
-  resources :friendships
+  resources :friendships, only: [:destroy, :update, :create]
   resources :pins
   resources :users, only: [:create]
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
@@ -10,6 +10,8 @@ Rails.application.routes.draw do
   get "/me", to: "sessions#show"
   post "/accountCheck", to: "sessions#accountCheck"
   delete "/logout", to: "sessions#destroy"
+  get "/requests", to: "friendships#requests"
+  get "/friends", to: "friendships#friends"
   # Defines the root path route ("/")
   # root "articles#index"
 end

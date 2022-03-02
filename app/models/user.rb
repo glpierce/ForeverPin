@@ -14,8 +14,9 @@ class User < ApplicationRecord
         User.where(id: ids)
     end
 
-    def send_invitation(user)
-        Friendship.create(friend_id: user.id)
+    def requests
+        ids = Friendship.where(friend_id: id, confirmed: false).pluck(:user_id)
+        User.where(id: ids)
     end
 
 end

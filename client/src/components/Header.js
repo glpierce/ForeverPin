@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
       display: "flex",
       flexDirection: "row",
       flexWrap: "nowrap",
-      justifyContent: "space_around"
+      justifyContent: "center"
     },
     menuContainer: {
         flexGrow: 1,
@@ -112,6 +112,7 @@ function Header({ user, setUser }) {
                     aria-expanded={open ? 'true' : undefined}
                     variant="contained"
                     disableElevation
+                    style={{textTransform: 'none'}}
                     onClick={handleClick}
                     endIcon={<KeyboardArrowDownIcon />}
                 >
