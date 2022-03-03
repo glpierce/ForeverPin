@@ -49,14 +49,14 @@ function FriendCard({ friend, request, resetToggle, setResetToggle }) {
     }
 
     function addFriend() {
-        const postObj = {
+        const patchObj = {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({confirmed: true})
         }
-        fetch(`/friendships/${friend.id}`, postObj)
+        fetch(`/friendships/${friend.id}`, patchObj)
         .then(r => r.ok ? setResetToggle(!resetToggle) : null)
     }
 

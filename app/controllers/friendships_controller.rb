@@ -5,7 +5,7 @@ class FriendshipsController < ApplicationController
     end
 
     def friends
-        render json: @current_user.friendships, status: 200
+        render json: @current_user.friends, status: 200
     end
 
     def destroy
@@ -33,7 +33,7 @@ class FriendshipsController < ApplicationController
     end
 
     def create
-        friendship = Friendship.create!(user_id: @current_user.id, friend_id: params[:id], confirmed: false)
+        friendship = Friendship.create!(user_id: @current_user.id, friend_id: params[:friend_id], confirmed: false)
         render json: friendship, status: 201
     end
 

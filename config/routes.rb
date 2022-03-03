@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   delete "/logout", to: "sessions#destroy"
   get "/requests", to: "friendships#requests"
   get "/friends", to: "friendships#friends"
+  post "/userSearch", to: "users#search"
   # Defines the root path route ("/")
   # root "articles#index"
 end
