@@ -25,7 +25,7 @@ function App() {
       <Switch>
 
         <Route path={"/my_account"}>
-          <Account />
+          <Account user={user} setUser={setUser}/>
         </Route>
 
         <Route path={"/friends"}>

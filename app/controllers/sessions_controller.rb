@@ -28,10 +28,15 @@ class SessionsController < ApplicationController
     end
 
     def accountCheck
+        response = []
         if (User.find_by(email: params[:email]))
-            render json: {error: "email already exists"}, status: 401
-        elsif (User.find_by(user_name: params[:username]))
-            render json: {error: "username already exists"}, status: 401
+            response.append("email already exists")
+        end
+        if (User.find_by(user_name: params[:username]))
+            response.append("username already exists")
+        end
+        if (response.length() > 0)
+            render json: response, status: 401
         else 
             head :no_content
         end

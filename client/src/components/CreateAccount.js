@@ -27,19 +27,28 @@ function CreateAccount({ setUser }) {
             body: JSON.stringify({email: email, username: username})
         }
         fetch("/accountCheck", payload)
-        .then((r) => {
-            if (r.ok) {
+        .then((resp) => {
+            if (resp.ok) {
                 setEmailInUse(false)
                 setUsernameInUse(false)
                 createAccount()
             } else {
-                if (r.json().error === "email already exists") {
-                setEmailInUse(true)
+                return(resp.json())
+                //resetPasswordFields()
+            }
+        })
+        .then(errors => {
+            if (!!errors) {
+                if (errors.includes("email already exists")) {
+                    setEmailInUse(true)
+                } else {
+                    setEmailInUse(false)
                 }
-                if (r.json().error === "username already exists") {
+                if (errors.includes("username already exists")) {
                     setUsernameInUse(true)
+                } else {
+                    setUsernameInUse(false)
                 }
-            resetPasswordFields()
             }
         })
     }

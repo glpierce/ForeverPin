@@ -18,6 +18,26 @@ class UsersController < ApplicationController
         render json: User.where(id: result_ids), status: 200
     end
 
+    def update
+        @current_user.update!(user_params)
+        render json: @current_user, status: 200
+    end
+
+    def updateCheck
+        response = []
+        if (User.find_by(email: params[:email]) && @current_user.email != params[:email])
+            response.append("email already exists")
+        end
+        if (User.find_by(user_name: params[:username]) && @current_user.user_name != params[:username])
+            response.append("username already exists")
+        end
+        if (response.length() > 0)
+            render json: response, status: 401
+        else 
+            head :no_content
+        end
+    end
+
     private
 
     def user_params
