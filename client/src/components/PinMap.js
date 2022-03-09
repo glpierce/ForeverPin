@@ -123,6 +123,25 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
         })
     }
 
+    function getCurrentLocation() {
+        navigator.geolocation.getCurrentPosition((position) => {
+            console.log(position)
+            getAddressFromCoords({latitude: position.coords.latitude, longitude: position.coords.longitude})
+        }, (error) => {
+            alert(`${error.message}. No pin for you!`)
+        })
+    }
+
+    function getAddressFromCoords(coords) {
+        fetch(`http://dev.virtualearth.net/REST/v1/locationrecog/${coords.latitude},${coords.longitude}?key=${process.env.REACT_APP_BING_TOKEN}&includeEntityTypes=address&output=json`)
+        .then(resp => resp.json())
+        .then(data => {
+            const cleanData = data.resourceSets[0].resources[0]
+            setViewState({latitude: coords.latitude, longitude: coords.longitude, zoom: 14})
+            setCreatedPin({latitude: coords.latitude, longitude: coords.longitude, title: "", description: "", address: (!!cleanData.addressOfLocation.length ? cleanData.addressOfLocation[0].formattedAddress : ""), visit_date: new Date()})
+        })
+    }
+
     function renderPinFunctionality() {
         return(
             <div className={classes.pinFunctionality}>
@@ -135,7 +154,7 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                     onChange={(e) => setSearchQuery(e.target.value)}
                 />
                 <Button variant="outlined" style={{height: 40}} onClick={e => (!!searchQuery.length ? searchLocation() : null)}>Search</Button>
-                <Button variant="outlined" style={{height: 40}}>Current Location</Button>
+                <Button variant="outlined" style={{height: 40}} onClick={e => getCurrentLocation()}>Current Location</Button>
                 <Button variant="outlined" style={{height: 40}}>New Pin</Button>
             </div>
         )
@@ -174,7 +193,7 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                 <div className={classes.popupContainer}>
                     <div className={classes.popupHeader}>
                         <button onClick={e => setSelectedPin(null)} style={{height: '20px'}}>X</button>
-                        <p className={classes.details}>({round(selectedPin.latitude, 3)}, {round(selectedPin.longitude, 3)})</p>
+                        <p className={classes.details}>({round(selectedPin.latitude, 3)}, {round(selectedPin.longitude, 5)})</p>
                     </div>
                     <h2 style={{marginBottom: 0}}>{selectedPin.title}</h2>
                     <div>
@@ -216,15 +235,6 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                     }}
                 >
                     <FormControl>
-                        <DatePicker
-                            required
-                            size="small"
-                            label="Visit Date"
-                            maxDate={new Date()}
-                            value={editedPin.visit_date}
-                            onChange={e => setEditedPin({...editedPin, visit_date: e})}
-                            renderInput={(params) => <TextField {...params} />}
-                        />
                         <TextField
                             required
                             fullWidth
@@ -236,15 +246,6 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                         />
                         <TextField
                             required
-                            fullWidth
-                            size="small"
-                            id="address"
-                            label="Address"
-                            value={editedPin.address}
-                            onChange={(e) => setEditedPin({...editedPin, address: e.target.value})}
-                        />
-                        <TextField
-                            required
                             multiline
                             minRows={2}
                             fullWidth
@@ -253,6 +254,24 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                             label="Description"
                             value={editedPin.description}
                             onChange={(e) => setEditedPin({...editedPin, description: e.target.value})}
+                        />
+                        <TextField
+                            required
+                            fullWidth
+                            size="small"
+                            id="address"
+                            label="Address"
+                            value={editedPin.address}
+                            onChange={(e) => setEditedPin({...editedPin, address: e.target.value})}
+                        />
+                        <DatePicker
+                            required
+                            size="small"
+                            label="Visit Date"
+                            maxDate={new Date()}
+                            value={editedPin.visit_date}
+                            onChange={e => setEditedPin({...editedPin, visit_date: e})}
+                            renderInput={(params) => <TextField {...params} />}
                         />
                         <Button variant="outlined" onClick={e => handleSavePin(e)}>Save</Button>
                     </FormControl>
@@ -276,15 +295,6 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                         }}
                     >
                         <FormControl>
-                            <DatePicker
-                                required
-                                size="small"
-                                label="Visit Date"
-                                maxDate={new Date()}
-                                value={new Date()}
-                                onChange={e => setCreatedPin({...createdPin, visit_date: e})}
-                                renderInput={(params) => <TextField {...params} />}
-                            />
                             <TextField
                                 required
                                 fullWidth
@@ -296,15 +306,6 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                             />
                             <TextField
                                 required
-                                fullWidth
-                                size="small"
-                                id="address"
-                                label="Address"
-                                value={createdPin.address}
-                                onChange={(e) => setCreatedPin({...createdPin, address: e.target.value})}
-                            />
-                            <TextField
-                                required
                                 multiline
                                 minRows={2}
                                 fullWidth
@@ -313,6 +314,24 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                                 label="Description"
                                 value={createdPin.description}
                                 onChange={(e) => setCreatedPin({...createdPin, description: e.target.value})}
+                            />
+                            <TextField
+                                required
+                                fullWidth
+                                size="small"
+                                id="address"
+                                label="Address"
+                                value={createdPin.address}
+                                onChange={(e) => setCreatedPin({...createdPin, address: e.target.value})}
+                            />
+                            <DatePicker
+                                required
+                                size="small"
+                                label="Visit Date"
+                                maxDate={new Date()}
+                                value={new Date()}
+                                onChange={e => setCreatedPin({...createdPin, visit_date: e})}
+                                renderInput={(params) => <TextField {...params} />}
                             />
                             <Button variant="outlined" onClick={e => handleCreatePin(e)}>Save</Button>
                         </FormControl>

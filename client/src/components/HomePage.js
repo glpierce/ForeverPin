@@ -83,10 +83,10 @@ function HomePage({ user }) {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
-    const [pins, setPins] = useState([])
-    const [groups, setGroups] = useState([])
-    const [routes, setRoutes] = useState([])
-    const [friends, setFriends] = useState([])
+    const [pins, setPins] = useState(null)
+    const [groups, setGroups] = useState(null)
+    const [routes, setRoutes] = useState(null)
+    const [friends, setFriends] = useState(null)
     const [titleDisplay, setTitleDisplay] = useState("My Pins")
     const [pinsEditable, setPinsEditable] = useState(true)
     const [selectedPin, setSelectedPin] = useState(null)
@@ -174,42 +174,46 @@ function HomePage({ user }) {
     }
     
     return(
-        <div className={classes.homeContainer}>
-            <div className={classes.navContainer}>
-                <AppBar position="static">
-                    <Toolbar variant="regular" className={classes.toolBar}>
-                        <div className={classes.spacer}></div>
-                        <Button variant="h6" color="inherit" className={classes.navElement} onClick={viewMyPins}>
-                            My Pins
-                        </Button>
-                        <Button id="groups" variant={(!!anchorEl && anchorEl.id === "groups") ? "outlined" : "h6"} color="inherit" className={classes.navElement} endIcon={<KeyboardArrowRightIcon />} onClick={e => setAnchorEl(e.currentTarget)}>
-                            Pin Groups
-                        </Button>
-                        <Button id="routes" variant={(!!anchorEl && anchorEl.id === "routes") ? "outlined" : "h6"} color="inherit" className={classes.navElement} endIcon={<KeyboardArrowRightIcon />} onClick={e => setAnchorEl(e.currentTarget)}>
-                            Routes
-                        </Button>
-                        <Button id="friends" variant={(!!anchorEl && anchorEl.id === "friends") ? "outlined" : "h6"} color="inherit" className={classes.navElement} endIcon={<KeyboardArrowRightIcon />} onClick={e => setAnchorEl(e.currentTarget)}>
-                            Friends' Pins
-                        </Button>
-                        <StyledMenu
-                            id="demo-customized-menu"
-                            MenuListProps={{
-                            'aria-labelledby': 'demo-customized-button',
-                            }}
-                            anchorEl={anchorEl}
-                            open={open}
-                            onClose={e => setAnchorEl(null)}
-                        >
-                            {!!anchorEl ? renderMenuItems() : null}
-                        </StyledMenu>
-                        <div className={classes.spacer}></div>
-                    </Toolbar>
-                </AppBar>
-            </div>
-            <div className={classes.mapContainer}>
-                <PinMap user={user} pins={pins} getMyPins={getMyPins} pinsEditable={pinsEditable} selectedPin={selectedPin} setSelectedPin={setSelectedPin} titleDisplay={titleDisplay}/>
-            </div>
-        </div>
+        <>
+            {(pins !== null && groups !== null) && (routes !== null && friends !== null) ? 
+                <div className={classes.homeContainer}>
+                    <div className={classes.navContainer}>
+                        <AppBar position="static">
+                            <Toolbar variant="regular" className={classes.toolBar}>
+                                <div className={classes.spacer}></div>
+                                <Button variant="h6" color="inherit" className={classes.navElement} onClick={viewMyPins}>
+                                    My Pins
+                                </Button>
+                                <Button id="groups" variant={(!!anchorEl && anchorEl.id === "groups") ? "outlined" : "h6"} color="inherit" className={classes.navElement} endIcon={<KeyboardArrowRightIcon />} onClick={e => setAnchorEl(e.currentTarget)}>
+                                    Pin Groups
+                                </Button>
+                                <Button id="routes" variant={(!!anchorEl && anchorEl.id === "routes") ? "outlined" : "h6"} color="inherit" className={classes.navElement} endIcon={<KeyboardArrowRightIcon />} onClick={e => setAnchorEl(e.currentTarget)}>
+                                    Routes
+                                </Button>
+                                <Button id="friends" variant={(!!anchorEl && anchorEl.id === "friends") ? "outlined" : "h6"} color="inherit" className={classes.navElement} endIcon={<KeyboardArrowRightIcon />} onClick={e => setAnchorEl(e.currentTarget)}>
+                                    Friends' Pins
+                                </Button>
+                                <StyledMenu
+                                    id="demo-customized-menu"
+                                    MenuListProps={{
+                                    'aria-labelledby': 'demo-customized-button',
+                                    }}
+                                    anchorEl={anchorEl}
+                                    open={open}
+                                    onClose={e => setAnchorEl(null)}
+                                >
+                                    {!!anchorEl ? renderMenuItems() : null}
+                                </StyledMenu>
+                                <div className={classes.spacer}></div>
+                            </Toolbar>
+                        </AppBar>
+                    </div>
+                    <div className={classes.mapContainer}>
+                        <PinMap user={user} pins={pins} getMyPins={getMyPins} pinsEditable={pinsEditable} selectedPin={selectedPin} setSelectedPin={setSelectedPin} titleDisplay={titleDisplay}/>
+                    </div>
+                </div>
+            : <h1>Loading...</h1>}
+        </>
     )
 }
 
