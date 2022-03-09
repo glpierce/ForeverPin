@@ -19,6 +19,12 @@ class PinsController < ApplicationController
         render json: new_pin, status: 201
     end
 
+    def destroy
+        selected_pin = Pin.find(params[:id])
+        selected_pin.destroy
+        head :no_content
+    end
+
     private
 
     def pin_params

@@ -1,5 +1,5 @@
 import { cardClasses } from "@mui/material"
-import React, { useState, useRef } from "react"
+import React, { useState, useEffect } from "react"
 import ReactMapGL, { Marker, Popup, NavigationControl, GeolocateControl } from "react-map-gl"
 import PinMarker from "../assets/PinMarker.png"
 import { makeStyles } from '@material-ui/core/styles';
@@ -42,11 +42,18 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
     const [editedPin, setEditedPin] = useState(null)
     const [searchQuery, setSearchQuery] = useState("")
     const [createdPin, setCreatedPin] = useState({})
+    const [newPinCoords, setNewPinCoords] = useState({})
     const [viewState, setViewState] = useState({
         latitude: 1.0,
         longitude: 1.0,
         zoom: 1.45,
     })
+
+    useEffect(() => {
+        setNewPinCoords({})
+        setCreatedPin({})
+        setEditPin(false)
+    },[pins])
 
     function round(num, places) {
         const factorOfTen = Math.pow(10, places);
@@ -84,6 +91,16 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
         .then(resp => {
             if (resp.ok) {
                 setEditPin(false)
+                setSelectedPin(null)
+                getMyPins()
+            }
+        })
+    }
+
+    function handleDelete() {
+        fetch(`/pins/${selectedPin.id}`, {method: "DELETE"})
+        .then(resp => {
+            if (resp.ok) {
                 setSelectedPin(null)
                 getMyPins()
             }
@@ -133,6 +150,9 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
     }
 
     function getAddressFromCoords(coords) {
+        if (!!Object.keys(newPinCoords).length) {
+            setNewPinCoords({})
+        }
         fetch(`http://dev.virtualearth.net/REST/v1/locationrecog/${coords.latitude},${coords.longitude}?key=${process.env.REACT_APP_BING_TOKEN}&includeEntityTypes=address&output=json`)
         .then(resp => resp.json())
         .then(data => {
@@ -155,7 +175,16 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                 />
                 <Button variant="outlined" style={{height: 40}} onClick={e => (!!searchQuery.length ? searchLocation() : null)}>Search</Button>
                 <Button variant="outlined" style={{height: 40}} onClick={e => getCurrentLocation()}>Current Location</Button>
-                <Button variant="outlined" style={{height: 40}}>New Pin</Button>
+                <Button variant="outlined" style={{height: 40}} onClick={e => setNewPinCoords({latitude: viewState.latitude, longitude: viewState.longitude})}>New Pin</Button>
+            </div>
+        )
+    }
+
+    function renderNewPinFunctionality() {
+        return(
+            <div className={classes.pinFunctionality}>
+                <Button variant="outlined" style={{height: 40}} onClick={e => getAddressFromCoords({...newPinCoords})}>Set Location</Button>
+                <Button variant="outlined" style={{height: 40}} onClick={e => setNewPinCoords({})}>Cancel New Pin</Button>
             </div>
         )
     }
@@ -167,6 +196,7 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                     key={pin.id}
                     latitude={parseFloat(pin.latitude)}
                     longitude={parseFloat(pin.longitude)}
+                    anchor={"bottom"}
                 >
                     <button className="marker-btn" onClick={e => setSelectedPin(pin)}>
                         <img src={PinMarker} alt="Pin Icon"/>
@@ -211,7 +241,9 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                                 addPin(true)
                             }
                         }}
-                    >{!!pinsEditable ? "Edit pin" : "Add to my pins"}</button>
+                    >{!!pinsEditable ? "Edit Pin" : "Add to my pins"}</button>
+                    <br></br>
+                    {!!pinsEditable ? <button onClick={e => handleDelete()}>Delete Pin</button> : <></>}
                 </div>
             )
         }
@@ -348,7 +380,7 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                     key={"search result"}
                     latitude={createdPin.latitude}
                     longitude={createdPin.longitude}
-                    closeButton={false} closeOnClick={false}
+                    anchor={"bottom"}
                 >
                     <img src={PinMarker} alt="Pin Icon"/>
                 </Marker>
@@ -357,16 +389,33 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
         )
     }
 
+    function renderNewPin() {
+        return(
+            <Marker
+                key={"new pin"}
+                latitude={newPinCoords.latitude}
+                longitude={newPinCoords.longitude}
+                anchor={"bottom"}
+                draggable={true}
+                onDragEnd={evt => setNewPinCoords({...newPinCoords, latitude: evt.lngLat.lat, longitude: evt.lngLat.lng})}
+            >
+                <img src={PinMarker} alt="Pin Icon"/>
+            </Marker>
+        )
+    }
+
     return(
         <>
             <div className={classes.mapHeader}>
                 <h2 style={{marginLeft: 10, marginBottom: 8}}>{titleDisplay}</h2>
-                {!!pinsEditable ? renderPinFunctionality() : null}
+                {!!pinsEditable && !Object.keys(newPinCoords).length ? renderPinFunctionality() : null}
+                {!!Object.keys(newPinCoords).length ? renderNewPinFunctionality() : null}
             </div>
             <ReactMapGL {...viewState} onMove={evt => setViewState(evt.viewState)} mapboxAccessToken={process.env.REACT_APP_MAPBOX_TOKEN} style={{width: "83vw", height: "88vh"}} mapStyle="mapbox://styles/glpierce174/cl0h3s1v8004t15m6qw98t5oj">
                 {!!pins.length ? renderPins() : null}
                 {!!Object.keys(createdPin).length ? renderSearchResult() : null}
                 {!!selectedPin ? renderPopup() : null}
+                {!!Object.keys(newPinCoords).length ? renderNewPin() : null}
                 <GeolocateControl position={"bottom-right"}/>
                 <NavigationControl position={"bottom-right"}/>
             </ReactMapGL>
