@@ -2,11 +2,13 @@ import React, {useEffect, useState} from "react"
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@mui/material/Button';
+import { TextField } from "@mui/material";
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { makeStyles } from '@material-ui/core/styles';
 import { styled, alpha } from '@mui/material/styles';
+import PinMap from "./PinMap"
 
 const useStyles = makeStyles((theme) => ({
     homeContainer: {
@@ -30,7 +32,10 @@ const useStyles = makeStyles((theme) => ({
     },
     spacer: {
         height: "20vh"
-    }
+    },
+    mapContainer: {
+        marginLeft: 10
+    },
 }))
 
 const StyledMenu = styled((props) => (
@@ -78,9 +83,13 @@ function HomePage({ user }) {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
+    const [pins, setPins] = useState([])
     const [groups, setGroups] = useState([])
     const [routes, setRoutes] = useState([])
     const [friends, setFriends] = useState([])
+    const [titleDisplay, setTitleDisplay] = useState("My Pins")
+    const [pinsEditable, setPinsEditable] = useState(true)
+    const [selectedPin, setSelectedPin] = useState(null)
 
     useEffect(() => {
         getMyPins()
@@ -90,7 +99,15 @@ function HomePage({ user }) {
     },[])
 
     function getMyPins() {
-
+        fetch(`/my_pins`)
+        .then(r => r.json())
+        .then(data => {
+            console.log(data)
+            setPins(data)
+            setTitleDisplay(`My Pins`)
+            setPinsEditable(true)
+            setSelectedPin(null)
+        })
     }
 
     function getGroups() {
@@ -121,7 +138,7 @@ function HomePage({ user }) {
     }
 
     function viewMyPins() {
-
+        getMyPins()
     }
 
     function getGroupPins() {
@@ -132,8 +149,16 @@ function HomePage({ user }) {
 
     }
 
-    function getFriendPins() {
-
+    function getFriendPins(e, friend) {
+        setAnchorEl(null)
+        fetch(`/pins/${friend.id}`)
+        .then(r => r.json())
+        .then(data => {
+            setPins(data)
+            setTitleDisplay(`${friend.user_name}'s Pins`)
+            setPinsEditable(false)
+            setSelectedPin(null)
+        })
     }
 
     function renderMenuItems() {
@@ -144,7 +169,7 @@ function HomePage({ user }) {
             return(!!routes.length ? routes.map(route => <MenuItem onClick={e => getRoute()} disableRipple>{route.title}</MenuItem>) : <MenuItem disableRipple>No routes yet...</MenuItem>)
         }
         if (anchorEl.id === "friends") {
-            return(!!friends.length ? friends.map(friend => <MenuItem onClick={e => getFriendPins()} disableRipple>{friend.user_name}</MenuItem>) : <MenuItem disableRipple>No friends yet...</MenuItem>)
+            return(!!friends.length ? friends.map(friend => <MenuItem onClick={e => getFriendPins(e, friend)} disableRipple>{friend.user_name}</MenuItem>) : <MenuItem disableRipple>No friends yet...</MenuItem>)
         }
     }
     
@@ -181,8 +206,8 @@ function HomePage({ user }) {
                     </Toolbar>
                 </AppBar>
             </div>
-            <div>
-
+            <div className={classes.mapContainer}>
+                <PinMap user={user} pins={pins} getMyPins={getMyPins} pinsEditable={pinsEditable} selectedPin={selectedPin} setSelectedPin={setSelectedPin} titleDisplay={titleDisplay}/>
             </div>
         </div>
     )

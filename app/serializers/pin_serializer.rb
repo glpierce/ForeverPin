@@ -1,3 +1,3 @@
 class PinSerializer < ActiveModel::Serializer
-  attributes :id
+  attributes :id, :user_id, :latitude, :longitude, :title, :description, :address, :visit_date
 end

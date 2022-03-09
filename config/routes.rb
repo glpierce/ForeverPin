@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   resources :routes
   resources :pin_groups
   resources :friendships, only: [:destroy, :update, :create]
-  resources :pins
+  resources :pins, only: [:show, :update, :create]
   resources :users, only: [:create, :update]
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   post "/login", to: "sessions#create"
@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   delete "/logout", to: "sessions#destroy"
   get "/requests", to: "friendships#requests"
   get "/friends", to: "friendships#friends"
+  get "/my_pins", to: "pins#my_pins"
   get "/my_routes", to: "routes#my_routes"
   get "/my_groups", to: "pin_groups#my_groups"
   post "/userSearch", to: "users#search"

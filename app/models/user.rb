@@ -19,4 +19,8 @@ class User < ApplicationRecord
         User.where(id: ids)
     end
 
+    def pins
+        Pin.where(user_id: id)
+    end
+
 end

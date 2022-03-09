@@ -6,6 +6,8 @@ import HomePage from "./components/HomePage";
 import LandingPage from "./components/LandingPage"
 import Friends from "./components/Friends"
 import Account from "./components/Account"
+import DateAdapter from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
 
 function App() {
   const [user, setUser] = useState({})
@@ -20,24 +22,26 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
-      <Header user={user} setUser={setUser}/>
-      <Switch>
+    <LocalizationProvider dateAdapter={DateAdapter}>
+      <div className="App">
+        <Header user={user} setUser={setUser}/>
+        <Switch>
 
-        <Route path={"/my_account"}>
-          <Account user={user} setUser={setUser}/>
-        </Route>
+          <Route path={"/my_account"}>
+            <Account user={user} setUser={setUser}/>
+          </Route>
 
-        <Route path={"/friends"}>
-          <Friends user={user} />
-        </Route>
+          <Route path={"/friends"}>
+            <Friends user={user} />
+          </Route>
 
-        <Route path={"/"}>
-          {!!Object.keys(user).length ? <HomePage user={user}/> : <LandingPage setUser={setUser} />}
-        </Route>
+          <Route path={"/"}>
+            {!!Object.keys(user).length ? <HomePage user={user}/> : <LandingPage setUser={setUser} />}
+          </Route>
 
-      </Switch>
-    </div>
+        </Switch>
+      </div>
+    </LocalizationProvider>
   );
 }
 
