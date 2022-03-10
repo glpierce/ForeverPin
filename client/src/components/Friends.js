@@ -152,7 +152,7 @@ function Friends({ user }) {
                         <div className={classes.actions}>
                             <Button 
                                 variant="outlined" 
-                                color="primary" 
+                                style={{color: "#083C5A", borderColor: "#083C5A", textTransform: "none"}} 
                                 type="submit"
                                 onClick={(e) => handleSearch(e)}
                             >Search</Button>

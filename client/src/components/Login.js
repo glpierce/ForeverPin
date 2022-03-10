@@ -61,7 +61,7 @@ function Login({ setUser }) {
                     />
                     <Button 
                         variant="outlined" 
-                        color="primary" 
+                        style={{color: "#083C5A", borderColor: "#083C5A"}} 
                         type="submit"
                         onClick={(e) => handleLoginSubmit(e)}
                     >

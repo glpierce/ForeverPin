@@ -24,22 +24,24 @@ function App() {
   return (
     <LocalizationProvider dateAdapter={DateAdapter}>
       <div className="App">
-        <Header user={user} setUser={setUser}/>
-        <Switch>
+        <div style={{minWidth: 1090}}>
+          <Header user={user} setUser={setUser}/>
+          <Switch>
 
-          <Route path={"/my_account"}>
-            <Account user={user} setUser={setUser}/>
-          </Route>
+            <Route path={"/my_account"}>
+              <Account user={user} setUser={setUser}/>
+            </Route>
 
-          <Route path={"/friends"}>
-            <Friends user={user} />
-          </Route>
+            <Route path={"/friends"}>
+              <Friends user={user} />
+            </Route>
 
-          <Route path={"/"}>
-            {!!Object.keys(user).length ? <HomePage user={user}/> : <LandingPage setUser={setUser} />}
-          </Route>
+            <Route path={"/"}>
+              {!!Object.keys(user).length ? <HomePage user={user}/> : <LandingPage setUser={setUser} />}
+            </Route>
 
-        </Switch>
+          </Switch>
+        </div>
       </div>
     </LocalizationProvider>
   );

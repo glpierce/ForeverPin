@@ -116,7 +116,7 @@ function Account({ user, setUser }) {
                     <p className={classes.fieldValue}>{userData.last_name}</p>
                 </div>
                 <br></br>
-                <Button variant="outlined" onClick={e => setEditToggle(true)}>Edit Info</Button>
+                <Button variant="outlined" style={{color: "#083C5A", borderColor: "#083C5A", textTransform: 'none'}} onClick={e => setEditToggle(true)}>Edit Info</Button>
             </div>
         )
     }
@@ -156,7 +156,7 @@ function Account({ user, setUser }) {
                         onChange={(e) => setUserData({...userData, last_name: e.target.value})}
                     />
                     <br />
-                    <Button variant="outlined" onClick={checkEmailAndUsername}>Save</Button>
+                    <Button variant="outlined" color="success" style={{textTransform: "none"}} onClick={checkEmailAndUsername}>Save</Button>
                 </FormControl>
             </Box>
         )

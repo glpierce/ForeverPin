@@ -145,7 +145,7 @@ function CreateAccount({ setUser }) {
               />
               {passwordMatch ? <></> : <p>Passwords must match</p>}
               <br />
-              <Button variant="outlined" onClick={handleSubmit}>Sign Up!</Button>
+              <Button variant="outlined" style={{color: "#083C5A", borderColor: "#083C5A"}} onClick={handleSubmit}>Sign Up!</Button>
             </FormControl>
           </Box>
         </div>

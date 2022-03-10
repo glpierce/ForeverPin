@@ -2,6 +2,7 @@ import { cardClasses } from "@mui/material"
 import React, { useState, useEffect } from "react"
 import ReactMapGL, { Marker, Popup, NavigationControl, GeolocateControl } from "react-map-gl"
 import PinMarker from "../assets/PinMarker.png"
+import NewPinMarker from "../assets/NewPinMarker.png"
 import { makeStyles } from '@material-ui/core/styles';
 import Moment from 'moment'
 import { FormControl, TextField, Button } from '@mui/material';
@@ -18,21 +19,28 @@ const useStyles = makeStyles((theme) => ({
     popupHeader: {
         display: "flex",
         justifyContent: "space-between",
-        alignItems: "center"
     },
     details: {
         margin: 0,
     },
+    popupButtonContainer: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-evenly"
+    },
     mapHeader: {
         display: "flex",
         flexDirection: "row",
-        justifyContent: "space-between"
+        justifyContent: "space-between",
+        alignItems: "center",
+        height: 60
     },
     pinFunctionality: {
         display: "flex",
         flexDirection: "row",
         alignItems: "flex-end",
-        marginBottom: 8
+        marginBottom: 8,
+        height: 56
     }
 }))
 
@@ -55,9 +63,9 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
         setEditPin(false)
     },[pins])
 
-    function round(num, places) {
-        const factorOfTen = Math.pow(10, places);
-        return Math.round(num * factorOfTen)/factorOfTen;
+    function trunc(num, places) {
+        const inputString = num.toString()
+        return(inputString.slice(0, (inputString.indexOf(".") + places + 1)))
     }
 
     function handleCreatePin(e) {
@@ -167,15 +175,15 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
             <div className={classes.pinFunctionality}>
                 <TextField
                     size="small"
-                    style={{width: 400}}
+                    style={{width: 400, marginRight: 5, borderColor: "#083C5A"}}
                     id="search"
-                    label="Seach by address"
+                    label="Seach by address or POI"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <Button variant="outlined" style={{height: 40}} onClick={e => (!!searchQuery.length ? searchLocation() : null)}>Search</Button>
-                <Button variant="outlined" style={{height: 40}} onClick={e => getCurrentLocation()}>Current Location</Button>
-                <Button variant="outlined" style={{height: 40}} onClick={e => setNewPinCoords({latitude: viewState.latitude, longitude: viewState.longitude})}>New Pin</Button>
+                <Button variant="outlined" style={{height: 40, marginRight: 10, color: "#083C5A", borderColor: "#083C5A", textTransform: 'none'}} onClick={e => (!!searchQuery.length ? searchLocation() : null)}>Search</Button>
+                <Button variant="outlined" style={{height: 40, marginRight: 10, color: "#083C5A", borderColor: "#083C5A", textTransform: 'none'}} onClick={e => getCurrentLocation()}>Current Location</Button>
+                <Button variant="outlined" style={{height: 40, color: "#083C5A", borderColor: "#083C5A", textTransform: 'none'}} onClick={e => setNewPinCoords({latitude: viewState.latitude, longitude: viewState.longitude})}>New Pin</Button>
             </div>
         )
     }
@@ -183,8 +191,9 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
     function renderNewPinFunctionality() {
         return(
             <div className={classes.pinFunctionality}>
-                <Button variant="outlined" style={{height: 40}} onClick={e => getAddressFromCoords({...newPinCoords})}>Set Location</Button>
-                <Button variant="outlined" style={{height: 40}} onClick={e => setNewPinCoords({})}>Cancel New Pin</Button>
+                <Button variant="outlined" color="success" style={{height: 40, marginRight: 10, textTransform: 'none'}} onClick={e => getAddressFromCoords({...newPinCoords})}>Set Location</Button>
+                <Button variant="outlined" style={{height: 40, marginRight: 10, color: "#083C5A", borderColor: "#083C5A", textTransform: 'none'}} onClick={e => setViewState({latitude: newPinCoords.latitude, longitude: newPinCoords.longitude, zoom: 10})}>Go To Pin</Button>
+                <Button variant="outlined" color="error" style={{height: 40, textTransform: 'none'}} onClick={e => setNewPinCoords({})}>Cancel New Pin</Button>
             </div>
         )
     }
@@ -209,7 +218,7 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
 
     function renderPopup() {
         return(
-            <Popup latitude={parseFloat(selectedPin.latitude)} longitude={parseFloat(selectedPin.longitude)} closeButton={false} closeOnClick={false}>
+            <Popup maxWidth={!!editPin ? "450px" : "300px"} style={!!editPin ? {width: 450} : {width: 300}} latitude={parseFloat(selectedPin.latitude)} longitude={parseFloat(selectedPin.longitude)} closeButton={false} closeOnClick={false}>
                 {renderPopupContents()}
             </Popup>
         )
@@ -223,7 +232,7 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                 <div className={classes.popupContainer}>
                     <div className={classes.popupHeader}>
                         <button onClick={e => setSelectedPin(null)} style={{height: '20px'}}>X</button>
-                        <p className={classes.details}>({round(selectedPin.latitude, 3)}, {round(selectedPin.longitude, 5)})</p>
+                        <p className={classes.details}>({trunc(selectedPin.latitude, 5)}, {trunc(selectedPin.longitude, 5)})</p>
                     </div>
                     <h2 style={{marginBottom: 0}}>{selectedPin.title}</h2>
                     <div>
@@ -233,17 +242,20 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                     <br/>
                     <p className={classes.details}>{selectedPin.description}</p>
                     <br/>
-                    <button onClick={e => {
-                            if (!!pinsEditable) {
-                                setEditPin(true)
-                                setEditedPin({...selectedPin})
-                            } else {
-                                addPin(true)
-                            }
-                        }}
-                    >{!!pinsEditable ? "Edit Pin" : "Add to my pins"}</button>
-                    <br></br>
-                    {!!pinsEditable ? <button onClick={e => handleDelete()}>Delete Pin</button> : <></>}
+                    <br/>
+                    <div className={classes.popupButtonContainer}>
+                        <Button variant="outlined" style={{color: "#083C5A", borderColor: "#083C5A", textTransform: 'none'}} onClick={e => {
+                                if (!!pinsEditable) {
+                                    setEditPin(true)
+                                    setEditedPin({...selectedPin})
+                                    setViewState({latitude: selectedPin.latitude, longitude: selectedPin.longitude, zoom: 10})
+                                } else {
+                                    addPin(true)
+                                }
+                            }}
+                        >{!!pinsEditable ? "Edit Pin" : "Add to my pins"}</Button>
+                        {!!pinsEditable ? <Button variant="outlined" color="error" style={{textTransform: 'none'}} onClick={e => handleDelete()}>Delete Pin</Button> : <></>}
+                    </div>
                 </div>
             )
         }
@@ -258,8 +270,9 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                         setEditPin(false)
                         }}
                     >X</button>
-                    <p className={classes.details}>({round(editedPin.latitude, 3)}, {round(editedPin.longitude, 3)})</p>
+                    <p className={classes.details}>({trunc(editedPin.latitude, 5)}, {trunc(editedPin.longitude, 5)})</p>
                 </div>
+                <br></br>
                 <Box
                     component="form"
                     sx={{
@@ -269,7 +282,7 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                     <FormControl>
                         <TextField
                             required
-                            fullWidth
+                            style={{width: 410}}
                             size="small"
                             id="title"
                             label="Title"
@@ -278,9 +291,9 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                         />
                         <TextField
                             required
+                            style={{width: 410}}
                             multiline
                             minRows={2}
-                            fullWidth
                             size="small"
                             id="description"
                             label="Description"
@@ -289,7 +302,7 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                         />
                         <TextField
                             required
-                            fullWidth
+                            style={{width: 410}}
                             size="small"
                             id="address"
                             label="Address"
@@ -305,7 +318,7 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                             onChange={e => setEditedPin({...editedPin, visit_date: e})}
                             renderInput={(params) => <TextField {...params} />}
                         />
-                        <Button variant="outlined" onClick={e => handleSavePin(e)}>Save</Button>
+                        <Button variant="outlined" color="success" style={{width: 70, marginLeft: 8, textTransform: 'none'}} onClick={e => handleSavePin(e)}>Save</Button>
                     </FormControl>
                 </Box>
             </div>
@@ -314,11 +327,11 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
 
     function renderCreatedPinForm() {
         return(
-            <Popup latitude={createdPin.latitude} longitude={createdPin.longitude} closeButton={false} closeOnClick={false}>
+            <Popup maxWidth={"450px"} style={{width: 450}} latitude={createdPin.latitude} longitude={createdPin.longitude} closeButton={false} closeOnClick={false}>
                 <div className={classes.popupContainer}>
                     <div className={classes.popupHeader}>
                         <button onClick={e => setCreatedPin({})} style={{height: '20px'}}>X</button>
-                        <p className={classes.details}>({round(createdPin.latitude, 3)}, {round(createdPin.longitude, 3)})</p>
+                        <p className={classes.details}>({trunc(createdPin.latitude, 5)}, {trunc(createdPin.longitude, 5)})</p>
                     </div>
                     <Box
                         component="form"
@@ -329,7 +342,7 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                         <FormControl>
                             <TextField
                                 required
-                                fullWidth
+                                style={{width: 410}}
                                 size="small"
                                 id="title"
                                 label="Title"
@@ -340,7 +353,7 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                                 required
                                 multiline
                                 minRows={2}
-                                fullWidth
+                                style={{width: 410}}
                                 size="small"
                                 id="description"
                                 label="Description"
@@ -349,7 +362,7 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                             />
                             <TextField
                                 required
-                                fullWidth
+                                style={{width: 410}}
                                 size="small"
                                 id="address"
                                 label="Address"
@@ -365,7 +378,7 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                                 onChange={e => setCreatedPin({...createdPin, visit_date: e})}
                                 renderInput={(params) => <TextField {...params} />}
                             />
-                            <Button variant="outlined" onClick={e => handleCreatePin(e)}>Save</Button>
+                            <Button variant="outlined" color="success" style={{width: 70, marginLeft: 8, textTransform: 'none'}} onClick={e => handleCreatePin(e)}>Save</Button>
                         </FormControl>
                     </Box>
                 </div>
@@ -399,7 +412,7 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                 draggable={true}
                 onDragEnd={evt => setNewPinCoords({...newPinCoords, latitude: evt.lngLat.lat, longitude: evt.lngLat.lng})}
             >
-                <img src={PinMarker} alt="Pin Icon"/>
+                <img src={NewPinMarker} alt="Pin Icon"/>
             </Marker>
         )
     }
@@ -411,7 +424,7 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                 {!!pinsEditable && !Object.keys(newPinCoords).length ? renderPinFunctionality() : null}
                 {!!Object.keys(newPinCoords).length ? renderNewPinFunctionality() : null}
             </div>
-            <ReactMapGL {...viewState} onMove={evt => setViewState(evt.viewState)} mapboxAccessToken={process.env.REACT_APP_MAPBOX_TOKEN} style={{width: "83vw", height: "88vh"}} mapStyle="mapbox://styles/glpierce174/cl0h3s1v8004t15m6qw98t5oj">
+            <ReactMapGL {...viewState} onMove={evt => setViewState(evt.viewState)} mapboxAccessToken={process.env.REACT_APP_MAPBOX_TOKEN} style={{width: "calc(100vw - 235px", height: "calc(100vh - 129px"}} mapStyle="mapbox://styles/glpierce174/cl0h3s1v8004t15m6qw98t5oj">
                 {!!pins.length ? renderPins() : null}
                 {!!Object.keys(createdPin).length ? renderSearchResult() : null}
                 {!!selectedPin ? renderPopup() : null}

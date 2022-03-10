@@ -18,23 +18,25 @@ const useStyles = makeStyles((theme) => ({
     navContainer: {
         display: "flex",
         justifyContent: "center",
-        width: 225
+        width: 200,
+        height: "calc(100vh - 69px)",
     },
     toolBar: {
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-evenly",
         alignItems: "center",
-        height: "92vh",
+        height: "calc(100vh - 69px)",
     },
     navElement: {
-        width: 225
+        width: 200
     },
     spacer: {
         height: "20vh"
     },
     mapContainer: {
-        marginLeft: 10
+        marginLeft: 10,
+        height: "calc(100vh - 55px)",
     },
 }))
 
@@ -43,7 +45,7 @@ const StyledMenu = styled((props) => (
       elevation={0}
       anchorOrigin={{
         vertical: 'top',
-        horizontal: 410,
+        horizontal: 380,
       }}
       transformOrigin={{
         vertical: 'top',
@@ -53,11 +55,10 @@ const StyledMenu = styled((props) => (
     />
   ))(({ theme }) => ({
     '& .MuiPaper-root': {
-      borderRadius: 6,
+      borderRadius: 0,
       marginTop: theme.spacing(1),
       minWidth: 180,
-      color:
-        theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
+      color: "#000",
       boxShadow:
         'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
       '& .MuiMenu-list': {
@@ -178,7 +179,7 @@ function HomePage({ user }) {
             {(pins !== null && groups !== null) && (routes !== null && friends !== null) ? 
                 <div className={classes.homeContainer}>
                     <div className={classes.navContainer}>
-                        <AppBar position="static">
+                        <AppBar position="static" style={{backgroundColor: "#083C5A"}}>
                             <Toolbar variant="regular" className={classes.toolBar}>
                                 <div className={classes.spacer}></div>
                                 <Button variant="h6" color="inherit" className={classes.navElement} onClick={viewMyPins}>

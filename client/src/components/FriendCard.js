@@ -81,11 +81,12 @@ function FriendCard({ friend, request, resetToggle, setResetToggle }) {
                 <Button
                     variant="outlined" 
                     color={!!request ? "success" : "error"}
+                    style={{textTransform: "none"}}
                     onClick={e => handleAction(e, !!request)}
                 >
                     {!!request ? "Accept" : "Unfriend"}
                 </Button>
-                {!!request ? <div className={classes.reject}><Button variant="outlined" color="error" onClick={e => handleAction(e, false)}>Reject</Button></div> : <></>}
+                {!!request ? <div className={classes.reject}><Button variant="outlined" color="error" style={{textTransform: "none"}} onClick={e => handleAction(e, false)}>Reject</Button></div> : <></>}
             </div>
         </div>
     )

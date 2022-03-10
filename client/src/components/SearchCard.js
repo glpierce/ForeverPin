@@ -64,7 +64,7 @@ function SearchCard({ user, resetToggle, setResetToggle}) {
                     :
                     <Button
                         variant="outlined" 
-                        color="primary"
+                        style={{textTransform: "none", color: "#083C5A", borderColor: "#083C5A"}}
                         onClick={handleRequest}
                     >
                         Send Request

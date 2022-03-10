@@ -1,7 +1,6 @@
 import React, { useState } from "react"
 import { styled, alpha } from '@mui/material/styles';
 import { makeStyles } from '@material-ui/core/styles';
-import { Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -9,22 +8,33 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useHistory } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
-    titleContainer: {
-      flexGrow: 1,
+    headerContainer: {
+      height: 55,
       display: "flex",
       flexDirection: "row",
+      width: "calc(100vw - 25px)"
+    },
+    titleContainer: {
+      flexGrow: 1,
+      flexBasis: "33%",
+      display: "flex",
       flexWrap: "nowrap",
-      justifyContent: "center"
+      justifyContent: "center",
+      alignItems: "center"
     },
     menuContainer: {
         flexGrow: 1,
+        flexBasis: "33%",
         display: "flex",
-        flexDirection: "row",
         flexWrap: "nowrap",
-        justifyContent: "right"
+        justifyContent: "right",
+        alignItems: "center"
     },
-    logo: {
-      flexGrow: "1",
+    placeholder: {
+      flexGrow: 1,
+      flexBasis: "33%",
+      display: "flex",
+      flexWrap: "nowrap",
     }
   }))
 
@@ -104,7 +114,7 @@ function Header({ user, setUser }) {
 
     function renderAccountMenu() {
         return(
-            <div style={{paddingRight: '40px'}}>
+            <>
                 <Button
                     id="demo-customized-button"
                     aria-controls={open ? 'demo-customized-menu' : undefined}
@@ -112,7 +122,7 @@ function Header({ user, setUser }) {
                     aria-expanded={open ? 'true' : undefined}
                     variant="contained"
                     disableElevation
-                    style={{textTransform: 'none'}}
+                    style={{textTransform: 'none', backgroundColor: "#083C5A"}}
                     onClick={handleClick}
                     endIcon={<KeyboardArrowDownIcon />}
                 >
@@ -140,18 +150,20 @@ function Header({ user, setUser }) {
                         Log out
                     </MenuItem>
                 </StyledMenu>
-            </div>
+            </>
         )
     }
 
     return(
-        <div>
-            <div className={classes.titleContailer}>
-                <Typography variant="h4" className={classes.logo}>ForeverPin</Typography>
-            </div>
-            <div className={classes.menuContainer}>
-                {!!Object.keys(user).length ? renderAccountMenu() : <></>}
-            </div>
+        <div className={classes.headerContainer}>
+          <div className={classes.placeholder}>
+          </div>
+          <div className={classes.titleContainer}>
+              <h1 style={{margin: 0}}>ForeverPin</h1>
+          </div>
+          <div className={classes.menuContainer}>
+              {!!Object.keys(user).length ? renderAccountMenu() : <></>}
+          </div>
         </div>
     )
 }
