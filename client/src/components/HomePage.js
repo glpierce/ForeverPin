@@ -94,8 +94,8 @@ function HomePage({ user }) {
 
     useEffect(() => {
         getMyPins()
-        getGroups()
-        getRoutes()
+        // getGroups()
+        // getRoutes()
         getFriends()
     },[])
 
@@ -164,10 +164,10 @@ function HomePage({ user }) {
 
     function renderMenuItems() {
         if (anchorEl.id === "groups") {
-            return(!!groups.length ? groups.map(group => <MenuItem onClick={e => getGroupPins()} disableRipple>{group.title}</MenuItem>) : <MenuItem disableRipple>No groups yet...</MenuItem>)
+            return(!!groups ? groups.map(group => <MenuItem onClick={e => getGroupPins()} disableRipple>{group.title}</MenuItem>) : <MenuItem disableRipple>No groups yet...</MenuItem>)
         }
         if (anchorEl.id === "routes") {
-            return(!!routes.length ? routes.map(route => <MenuItem onClick={e => getRoute()} disableRipple>{route.title}</MenuItem>) : <MenuItem disableRipple>No routes yet...</MenuItem>)
+            return(!!routes ? routes.map(route => <MenuItem onClick={e => getRoute()} disableRipple>{route.title}</MenuItem>) : <MenuItem disableRipple>No routes yet...</MenuItem>)
         }
         if (anchorEl.id === "friends") {
             return(!!friends.length ? friends.map(friend => <MenuItem onClick={e => getFriendPins(e, friend)} disableRipple>{friend.user_name}</MenuItem>) : <MenuItem disableRipple>No friends yet...</MenuItem>)
@@ -176,7 +176,7 @@ function HomePage({ user }) {
     
     return(
         <>
-            {(pins !== null && groups !== null) && (routes !== null && friends !== null) ? 
+            {(pins !== null && friends !== null) ? 
                 <div className={classes.homeContainer}>
                     <div className={classes.navContainer}>
                         <AppBar position="static" style={{backgroundColor: "#083C5A"}}>
