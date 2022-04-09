@@ -4,6 +4,7 @@ class CreatePinGroups < ActiveRecord::Migration[7.0]
       t.integer :user_id
       t.string :title
       t.string :description
+      t.integer :marker_color
       t.timestamps
     end
   end

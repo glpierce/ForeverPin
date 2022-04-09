@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   resources :route_pins
   resources :routes
-  resources :pin_groups
+  resources :pin_groups, only: [:create, :update, :destroy]
   resources :friendships, only: [:destroy, :update, :create]
   resources :pins, only: [:show, :update, :create, :destroy]
   resources :users, only: [:create, :update]

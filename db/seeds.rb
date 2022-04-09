@@ -36,6 +36,10 @@ f11 = Friendship.create!(user_id: u10.id, friend_id: u3.id, confirmed: false)
 f12 = Friendship.create!(user_id: u11.id, friend_id: u3.id, confirmed: true)
 
 
+puts "Seeding pin groups..."
+pg1 = PinGroup.create(user_id: u3.id, title: "Test Group", description: "Group for testing if groups are working", marker_color: 1)
+
+
 puts "Seeding pins..."
 p1 = Pin.create!(user_id: u3.id,
                 latitude: "38.24747440963926", 
@@ -43,7 +47,8 @@ p1 = Pin.create!(user_id: u3.id,
                 title: "Home", 
                 description: "My home!", 
                 address: "510 Briar Hill Rd, Louisville, KY 40206",
-                visit_date: DateTime.new(2015, 6, 25, 8, 5, 12))
+                visit_date: DateTime.new(2015, 6, 25, 8, 5, 12),
+                pin_group_id: pg1.id)
 p2 = Pin.create!(user_id: u3.id,
                 latitude: "38.25118318744765", 
                 longitude: "-85.65429221966407", 

@@ -28,7 +28,7 @@ class PinsController < ApplicationController
     private
 
     def pin_params
-        params.permit(:title, :longitude, :latitude, :address, :visit_date, :description, :user_id).with_defaults(user_id: @current_user.id)
+        params.permit(:title, :longitude, :latitude, :address, :visit_date, :description, :user_id, :pin_group_id).with_defaults(user_id: @current_user.id)
     end
 
 end

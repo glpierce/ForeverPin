@@ -1,13 +1,21 @@
 import { cardClasses } from "@mui/material"
 import React, { useState, useEffect } from "react"
 import ReactMapGL, { Marker, Popup, NavigationControl, GeolocateControl } from "react-map-gl"
-import PinMarker from "../assets/PinMarker.png"
+import PinMarkerRed from "../assets/PinMarkerRed.png"
+import PinMarkerBlack from "../assets/PinMarkerBlack.png"
+import PinMarkerBlue from "../assets/PinMarkerBlue.png"
+import PinMarkerGreen from "../assets/PinMarkerGreen.png"
+import PinMarkerOrange from "../assets/PinMarkerOrange.png"
+import PinMarkerPurple from "../assets/PinMarkerPurple.png"
+import PinMarkerWhite from "../assets/PinMarkerWhite.png"
+import PinMarkerYellow from "../assets/PinMarkerYellow.png"
 import NewPinMarker from "../assets/NewPinMarker.png"
 import { makeStyles } from '@material-ui/core/styles';
 import Moment from 'moment'
-import { FormControl, TextField, Button } from '@mui/material';
-import Box from '@mui/material/Box';
+import { FormControl, TextField, Button, Select, MenuItem, Box } from '@mui/material';
+import ModeEditSharpIcon from '@mui/icons-material/ModeEditSharp';
 import DatePicker from '@mui/lab/DatePicker';
+import { color } from "@mui/system"
 
 
 const useStyles = makeStyles((theme) => ({
@@ -35,16 +43,29 @@ const useStyles = makeStyles((theme) => ({
         alignItems: "center",
         height: 60
     },
+    mapTitle: {
+        display: "flex",
+        flexDirection: "row",
+        marginBottom: 8,
+        alignItems: "flex-end",
+        height: 56,
+        textAlign: "center"
+    },
     pinFunctionality: {
         display: "flex",
         flexDirection: "row",
         alignItems: "flex-end",
         marginBottom: 8,
         height: 56
+    },
+    visitGroupCotainer: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "left"
     }
 }))
 
-function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedPin, titleDisplay }) {
+function PinMap({ user, pins, groups, getMyPins, pinsEditable, selectedPin, setSelectedPin, titleDisplay, editGroup, selectedGroup }) {
     const classes = useStyles();
     const [editPin, setEditPin] = useState(false)
     const [editedPin, setEditedPin] = useState(null)
@@ -75,7 +96,7 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
             headers: {
                 "COntent-Type": "application/json"
             },
-            body: JSON.stringify({...createdPin})
+            body: JSON.stringify(createdPin.pin_group_id < 0 ? {...createdPin, pin_group_id: null} : {...createdPin})
         }
         fetch("/pins", postObj)
         .then(resp => {
@@ -93,7 +114,7 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({...editedPin})
+            body: JSON.stringify(editedPin.pin_group_id < 0 ? {...editedPin, pin_group_id: null} : {...editedPin})
         }
         fetch(`/pins/${editedPin.id}`, patchObj)
         .then(resp => {
@@ -142,7 +163,7 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
         .then(data => {
             setSelectedPin(null)
             const cleanData = data.resourceSets[0].resources[0]
-            setCreatedPin({latitude: cleanData.point.coordinates[0], longitude: cleanData.point.coordinates[1], title: "", description: "", address: cleanData.address.formattedAddress, visit_date: new Date()})
+            setCreatedPin({latitude: cleanData.point.coordinates[0], longitude: cleanData.point.coordinates[1], title: "", description: "", address: cleanData.address.formattedAddress, visit_date: new Date(), pin_group_id: null})
             setViewState({latitude: cleanData.point.coordinates[0], longitude: cleanData.point.coordinates[1], zoom: 14})
             setSearchQuery("")
         })
@@ -166,7 +187,7 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
         .then(data => {
             const cleanData = data.resourceSets[0].resources[0]
             setViewState({latitude: coords.latitude, longitude: coords.longitude, zoom: 14})
-            setCreatedPin({latitude: coords.latitude, longitude: coords.longitude, title: "", description: "", address: (!!cleanData.addressOfLocation.length ? cleanData.addressOfLocation[0].formattedAddress : ""), visit_date: new Date()})
+            setCreatedPin({latitude: coords.latitude, longitude: coords.longitude, title: "", description: "", address: (!!cleanData.addressOfLocation.length ? cleanData.addressOfLocation[0].formattedAddress : ""), visit_date: new Date(), pin_group_id: null})
         })
     }
 
@@ -198,6 +219,28 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
         )
     }
 
+    function getPinMarkerSource(group_id) {
+        const color_id = groups.find(group => group.id === group_id).marker_color
+        switch (color_id) {
+            case 0:
+                return(PinMarkerRed)
+            case 1:
+                return(PinMarkerBlack)
+            case 2:
+                return(PinMarkerBlue)
+            case 3:
+                return(PinMarkerGreen)
+            case 4:
+                return(PinMarkerOrange)
+            case 5:
+                return(PinMarkerPurple)
+            case 6:
+                return(PinMarkerWhite)
+            case 7:
+                return(PinMarkerYellow)
+        }
+    }
+
     function renderPins() {
         const pinMarkers = pins.map(pin => {
             return(
@@ -208,7 +251,7 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                     anchor={"bottom"}
                 >
                     <button className="marker-btn" onClick={e => setSelectedPin(pin)}>
-                        <img src={PinMarker} alt="Pin Icon"/>
+                        <img src={!!pin.pin_group_id ? getPinMarkerSource(pin.pin_group_id) : PinMarkerRed} alt="Pin Icon"/>
                     </button>
                 </Marker>
             )
@@ -281,7 +324,6 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                 >
                     <FormControl>
                         <TextField
-                            required
                             style={{width: 410}}
                             size="small"
                             id="title"
@@ -290,7 +332,6 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                             onChange={(e) => setEditedPin({...editedPin, title: e.target.value})}
                         />
                         <TextField
-                            required
                             style={{width: 410}}
                             multiline
                             minRows={2}
@@ -301,7 +342,6 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                             onChange={(e) => setEditedPin({...editedPin, description: e.target.value})}
                         />
                         <TextField
-                            required
                             style={{width: 410}}
                             size="small"
                             id="address"
@@ -309,15 +349,29 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                             value={editedPin.address}
                             onChange={(e) => setEditedPin({...editedPin, address: e.target.value})}
                         />
-                        <DatePicker
-                            required
-                            size="small"
-                            label="Visit Date"
-                            maxDate={new Date()}
-                            value={editedPin.visit_date}
-                            onChange={e => setEditedPin({...editedPin, visit_date: e})}
-                            renderInput={(params) => <TextField {...params} />}
-                        />
+                        <div className={classes.visitGroupCotainer}>
+                            <DatePicker
+                                required
+                                size="small"
+                                label="Visit Date"
+                                maxDate={new Date()}
+                                value={editedPin.visit_date}
+                                onChange={e => setEditedPin({...editedPin, visit_date: e})}
+                                renderInput={(params) => <TextField {...params} />}
+                            />
+                            {!!groups.length ?
+                                <Select
+                                    size="small"
+                                    label="Group"
+                                    style={{height: 55, width: 235, marginTop: 8}}
+                                    value={!!editedPin.pin_group_id ? editedPin.pin_group_id : -1}
+                                    onChange={e => setEditedPin({...editedPin, pin_group_id: e.target.value})}
+                                >
+                                    <MenuItem value={-1}>No Group</MenuItem>
+                                    {groups.map(group => <MenuItem value={group.id}>{group.title}</MenuItem>)}
+                                </Select>
+                            : null}
+                        </div>
                         <Button variant="outlined" color="success" style={{width: 70, marginLeft: 8, textTransform: 'none'}} onClick={e => handleSavePin(e)}>Save</Button>
                     </FormControl>
                 </Box>
@@ -341,7 +395,6 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                     >
                         <FormControl>
                             <TextField
-                                required
                                 style={{width: 410}}
                                 size="small"
                                 id="title"
@@ -350,7 +403,6 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                                 onChange={(e) => setCreatedPin({...createdPin, title: e.target.value})}
                             />
                             <TextField
-                                required
                                 multiline
                                 minRows={2}
                                 style={{width: 410}}
@@ -361,7 +413,6 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                                 onChange={(e) => setCreatedPin({...createdPin, description: e.target.value})}
                             />
                             <TextField
-                                required
                                 style={{width: 410}}
                                 size="small"
                                 id="address"
@@ -369,15 +420,29 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                                 value={createdPin.address}
                                 onChange={(e) => setCreatedPin({...createdPin, address: e.target.value})}
                             />
-                            <DatePicker
-                                required
-                                size="small"
-                                label="Visit Date"
-                                maxDate={new Date()}
-                                value={new Date()}
-                                onChange={e => setCreatedPin({...createdPin, visit_date: e})}
-                                renderInput={(params) => <TextField {...params} />}
-                            />
+                            <div className={classes.visitGroupCotainer}>
+                                <DatePicker
+                                    required
+                                    size="small"
+                                    label="Visit Date"
+                                    maxDate={new Date()}
+                                    value={new Date()}
+                                    onChange={e => setCreatedPin({...createdPin, visit_date: e})}
+                                    renderInput={(params) => <TextField {...params} />}
+                                />
+                                {!!groups.length ?
+                                    <Select
+                                        size="small"
+                                        label="Group"
+                                        style={{height: 55, width: 235, marginTop: 8}}
+                                        value={!!createdPin.pin_group_id ? createdPin.pin_group_id : -1}
+                                        onChange={e => setCreatedPin({...createdPin, pin_group_id: e.target.value})}
+                                    >
+                                        <MenuItem value={-1}>No Group</MenuItem>
+                                        {groups.map(group => <MenuItem value={group.id}>{group.title}</MenuItem>)}
+                                    </Select>
+                                : null}
+                            </div>
                             <Button variant="outlined" color="success" style={{width: 70, marginLeft: 8, textTransform: 'none'}} onClick={e => handleCreatePin(e)}>Save</Button>
                         </FormControl>
                     </Box>
@@ -395,7 +460,7 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
                     longitude={createdPin.longitude}
                     anchor={"bottom"}
                 >
-                    <img src={PinMarker} alt="Pin Icon"/>
+                    <img src={NewPinMarker} alt="Pin Icon"/>
                 </Marker>
                 {renderCreatedPinForm()}
             </>
@@ -420,7 +485,14 @@ function PinMap({ user, pins, getMyPins, pinsEditable, selectedPin, setSelectedP
     return(
         <>
             <div className={classes.mapHeader}>
-                <h2 style={{marginLeft: 10, marginBottom: 8}}>{titleDisplay}</h2>
+                <div className={classes.mapTitle}>
+                    <h2 style={{marginLeft: 10, marginBottom: 0}}>{titleDisplay}</h2>
+                    {!!Object.keys(selectedGroup).length ?
+                        <Button variant="outlined" onClick={e => editGroup()} style={{height: 22, minWidth: 0, width: 16, marginLeft: 15, color: "#083C5A", borderColor: "#083C5A", textTransform: 'none'}}>
+                            <ModeEditSharpIcon style={{height: 16}}/>
+                        </Button>
+                    : null}
+                </div>
                 {!!pinsEditable && !Object.keys(newPinCoords).length ? renderPinFunctionality() : null}
                 {!!Object.keys(newPinCoords).length ? renderNewPinFunctionality() : null}
             </div>

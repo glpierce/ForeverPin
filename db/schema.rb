@@ -26,6 +26,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_02_27_230413) do
     t.integer "user_id"
     t.string "title"
     t.string "description"
+    t.integer "marker_color"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

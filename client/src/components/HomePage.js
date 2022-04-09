@@ -9,6 +9,7 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { makeStyles } from '@material-ui/core/styles';
 import { styled, alpha } from '@mui/material/styles';
 import PinMap from "./PinMap"
+import EditGroup from "./EditGroup";
 
 const useStyles = makeStyles((theme) => ({
     homeContainer: {
@@ -38,6 +39,9 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: 10,
         height: "calc(100vh - 55px)",
     },
+    newGroupButton: {
+        textDecoration: "underline"
+    }
 }))
 
 const StyledMenu = styled((props) => (
@@ -82,24 +86,30 @@ const StyledMenu = styled((props) => (
 
 function HomePage({ user }) {
     const classes = useStyles();
+    const [homePageReset, setHomePageReset] = useState(false)
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
     const [pins, setPins] = useState(null)
     const [groups, setGroups] = useState(null)
-    const [routes, setRoutes] = useState(null)
+    const [mapToggle, setMapToggle] = useState(true)
+    const [createGroupToggle, setCreateGroupToggle] = useState(false)
+    const [editedGroup, setEditedGroup] = useState({})
     const [friends, setFriends] = useState(null)
     const [titleDisplay, setTitleDisplay] = useState("My Pins")
     const [pinsEditable, setPinsEditable] = useState(true)
     const [selectedPin, setSelectedPin] = useState(null)
+    const [selectedGroup, setSelectedGroup] = useState({})
 
     useEffect(() => {
         getMyPins()
-        // getGroups()
+        getGroups()
         // getRoutes()
         getFriends()
-    },[])
+    },[homePageReset])
 
     function getMyPins() {
+        setSelectedGroup({})
+        setMapToggle(true)
         fetch(`/my_pins`)
         .then(r => r.json())
         .then(data => {
@@ -108,6 +118,7 @@ function HomePage({ user }) {
             setTitleDisplay(`My Pins`)
             setPinsEditable(true)
             setSelectedPin(null)
+            setMapToggle(true)
         })
     }
 
@@ -115,17 +126,7 @@ function HomePage({ user }) {
         fetch(`/my_groups`)
         .then(r => r.json())
         .then(data => {
-            console.log(data)
             setGroups(data)
-        })
-    }
-
-    function getRoutes() {
-        fetch(`/my_routes`)
-        .then(r => r.json())
-        .then(data => {
-            console.log(data)
-            setRoutes(data)
         })
     }
 
@@ -133,24 +134,28 @@ function HomePage({ user }) {
         fetch(`/friends`)
         .then(r => r.json())
         .then(data => {
-            console.log(data)
             setFriends(data)
         })
     }
 
-    function viewMyPins() {
-        getMyPins()
-    }
-
-    function getGroupPins() {
-
-    }
-
-    function getRoute() {
-
+    function getGroupPins(group_id) {
+        setAnchorEl(null)
+        setMapToggle(true)
+        setEditedGroup({})
+        fetch(`/my_pins`)
+        .then(r => r.json())
+        .then(data => {
+            console.log(data)
+            setPins(data.filter(pin => pin.pin_group_id === group_id))
+            setSelectedGroup(groups.find(group => group.id === group_id))
+            setTitleDisplay(groups.find(group => group.id === group_id).title)
+            setPinsEditable(true)
+            setSelectedPin(null)
+        })
     }
 
     function getFriendPins(e, friend) {
+        setMapToggle(true)
         setAnchorEl(null)
         fetch(`/pins/${friend.id}`)
         .then(r => r.json())
@@ -162,12 +167,27 @@ function HomePage({ user }) {
         })
     }
 
+    function createGroup() {
+        setAnchorEl(null)
+        setMapToggle(false)
+        setCreateGroupToggle(true)
+        setEditedGroup({user_id: user.id, title: "", description: "", marker_color: 0})
+    }
+
+    function editGroup() {
+        setMapToggle(false)
+        setCreateGroupToggle(false)
+        setEditedGroup({...selectedGroup})
+    }
+
     function renderMenuItems() {
         if (anchorEl.id === "groups") {
-            return(!!groups ? groups.map(group => <MenuItem onClick={e => getGroupPins()} disableRipple>{group.title}</MenuItem>) : <MenuItem disableRipple>No groups yet...</MenuItem>)
-        }
-        if (anchorEl.id === "routes") {
-            return(!!routes ? routes.map(route => <MenuItem onClick={e => getRoute()} disableRipple>{route.title}</MenuItem>) : <MenuItem disableRipple>No routes yet...</MenuItem>)
+            return(
+                <>
+                    <MenuItem className={classes.newGroupButton} onClick={e => createGroup()} disableRipple>Create New Group</MenuItem>
+                    {!!groups.length ? groups.map(group => <MenuItem onClick={e => getGroupPins(group.id)} disableRipple>{group.title}</MenuItem>) : <MenuItem disableRipple>No groups yet...</MenuItem>}
+                </>
+            )
         }
         if (anchorEl.id === "friends") {
             return(!!friends.length ? friends.map(friend => <MenuItem onClick={e => getFriendPins(e, friend)} disableRipple>{friend.user_name}</MenuItem>) : <MenuItem disableRipple>No friends yet...</MenuItem>)
@@ -176,20 +196,20 @@ function HomePage({ user }) {
     
     return(
         <>
-            {(pins !== null && friends !== null) ? 
+            {((pins !== null && friends !== null) && groups !== null) ? 
                 <div className={classes.homeContainer}>
                     <div className={classes.navContainer}>
                         <AppBar position="static" style={{backgroundColor: "#083C5A"}}>
                             <Toolbar variant="regular" className={classes.toolBar}>
                                 <div className={classes.spacer}></div>
-                                <Button variant="h6" color="inherit" className={classes.navElement} onClick={viewMyPins}>
+                                <Button variant="h6" color="inherit" className={classes.navElement} onClick={e => {
+                                    setSelectedGroup({})
+                                    getMyPins()
+                                }}>
                                     My Pins
                                 </Button>
                                 <Button id="groups" variant={(!!anchorEl && anchorEl.id === "groups") ? "outlined" : "h6"} color="inherit" className={classes.navElement} endIcon={<KeyboardArrowRightIcon />} onClick={e => setAnchorEl(e.currentTarget)}>
                                     Pin Groups
-                                </Button>
-                                <Button id="routes" variant={(!!anchorEl && anchorEl.id === "routes") ? "outlined" : "h6"} color="inherit" className={classes.navElement} endIcon={<KeyboardArrowRightIcon />} onClick={e => setAnchorEl(e.currentTarget)}>
-                                    Routes
                                 </Button>
                                 <Button id="friends" variant={(!!anchorEl && anchorEl.id === "friends") ? "outlined" : "h6"} color="inherit" className={classes.navElement} endIcon={<KeyboardArrowRightIcon />} onClick={e => setAnchorEl(e.currentTarget)}>
                                     Friends' Pins
@@ -210,7 +230,8 @@ function HomePage({ user }) {
                         </AppBar>
                     </div>
                     <div className={classes.mapContainer}>
-                        <PinMap user={user} pins={pins} getMyPins={getMyPins} pinsEditable={pinsEditable} selectedPin={selectedPin} setSelectedPin={setSelectedPin} titleDisplay={titleDisplay}/>
+                        {!!mapToggle && !!pins ? <PinMap user={user} pins={pins} groups={groups} getMyPins={getMyPins} pinsEditable={pinsEditable} selectedPin={selectedPin} setSelectedPin={setSelectedPin} titleDisplay={titleDisplay} editGroup={editGroup} selectedGroup={selectedGroup}/> : null}
+                        {!mapToggle && !!Object.keys(editedGroup).length ? <EditGroup setPins={setPins} createGroupToggle={createGroupToggle} editedGroup={editedGroup} setEditedGroup={setEditedGroup} homePageReset={homePageReset} setHomePageReset={setHomePageReset} setSelectedGroup={setSelectedGroup} /> : null}
                     </div>
                 </div>
             : <h1>Loading...</h1>}
