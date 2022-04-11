@@ -251,7 +251,7 @@ function PinMap({ user, pins, groups, getMyPins, pinsEditable, selectedPin, setS
                     anchor={"bottom"}
                 >
                     <button className="marker-btn" onClick={e => setSelectedPin(pin)}>
-                        <img src={!!pin.pin_group_id ? getPinMarkerSource(pin.pin_group_id) : PinMarkerRed} alt="Pin Icon"/>
+                        <img src={!!pin.pin_group_id && pin.user_id === user.id ? getPinMarkerSource(pin.pin_group_id) : PinMarkerRed} alt="Pin Icon"/>
                     </button>
                 </Marker>
             )

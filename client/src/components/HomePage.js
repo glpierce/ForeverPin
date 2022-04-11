@@ -126,6 +126,7 @@ function HomePage({ user }) {
         fetch(`/my_groups`)
         .then(r => r.json())
         .then(data => {
+            console.log(data)
             setGroups(data)
         })
     }
@@ -134,6 +135,7 @@ function HomePage({ user }) {
         fetch(`/friends`)
         .then(r => r.json())
         .then(data => {
+            console.log(data)
             setFriends(data)
         })
     }
