@@ -1,6 +1,4 @@
 Rails.application.routes.draw do
-  resources :route_pins
-  resources :routes
   resources :pin_groups, only: [:create, :update, :destroy]
   resources :friendships, only: [:destroy, :update, :create]
   resources :pins, only: [:show, :update, :create, :destroy]
@@ -14,7 +12,6 @@ Rails.application.routes.draw do
   get "/requests", to: "friendships#requests"
   get "/friends", to: "friendships#friends"
   get "/my_pins", to: "pins#my_pins"
-  get "/my_routes", to: "routes#my_routes"
   get "/my_groups", to: "pin_groups#my_groups"
   post "/userSearch", to: "users#search"
   # Defines the root path route ("/")

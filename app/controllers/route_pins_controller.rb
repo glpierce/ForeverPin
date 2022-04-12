@@ -1,2 +1,0 @@
-class RoutePinsController < ApplicationController
-end

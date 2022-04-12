@@ -5,7 +5,6 @@ class User < ApplicationRecord
     has_many :friendships, dependent: :destroy
     has_many :pending_friendships, -> { where confirmed: false }, class_name: 'Friendship', foreign_key: "friend_id"
     has_many :pin_groups, dependent: :destroy
-    has_many :routes, dependent: :destroy
 
     def friends
         friends_i_intitiate = Friendship.where(user_id: id, confirmed: true).pluck(:friend_id)

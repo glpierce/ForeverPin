@@ -9,35 +9,17 @@
 puts "Seeding users..."
 u1 = User.create!(first_name: "John", last_name: "Smith", email: "jsmith@gmail.com", user_name: "TravelingSmith", password: "test")
 u2 = User.create!(first_name: "Jane", last_name: "Doe", email: "jdoe@gmail.com", user_name: "DoeADeer", password: "test")
-u3 = User.create!(first_name: "Michael", last_name: "Corning", email: "mcorning@gmail.com", user_name: "HeavensGate01", password: "test")
-u4 = User.create!(first_name: "Emily", last_name: "Jones", email: "ejones@gmail.com", user_name: "worldeater69", password: "test")
-u5 = User.create!(first_name: "Lucas", last_name: "Rodriguez", email: "widmer12@gmail.com", user_name: "floridaMan123", password: "test")
-u6 = User.create!(first_name: "Julian", last_name: "Ronda", email: "jronda26@gmail.com", user_name: "ChefBoyardee", password: "test")
-u7 = User.create!(first_name: "Sam", last_name: "May", email: "smay55@gmail.com", user_name: "GoldAlmond12", password: "test")
-u8 = User.create!(first_name: "Matt", last_name: "Marvin", email: "mrm@gmail.com", user_name: "RoysOurBoy", password: "test")
-u9 = User.create!(first_name: "Lance", last_name: "Hebert", email: "lanceh@gmail.com", user_name: "deepestDepths999", password: "test")
-u10 = User.create!(first_name: "Nick", last_name: "Zhang", email: "nzhang@gmail.com", user_name: "1NJ57C3", password: "test")
-u11 = User.create!(first_name: "Jerry", last_name: "Tong", email: "geri@gmail.com", user_name: "MusicMan45", password: "test")
-u12 = User.create!(first_name: "Phil", last_name: "Roth", email: "proth@gmail.com", user_name: "LordPhilington", password: "test")
+u3 = User.create!(first_name: "Michael", last_name: "Corning", email: "mcorning@gmail.com", user_name: "MCorning", password: "test")
 
 
 puts "Seeding friendships..."
 f1 = Friendship.create!(user_id: u1.id, friend_id: u2.id, confirmed: true)
 f2 = Friendship.create!(user_id: u1.id, friend_id: u3.id, confirmed: true)
-f3 = Friendship.create!(user_id: u1.id, friend_id: u4.id, confirmed: true)
-f4 = Friendship.create!(user_id: u2.id, friend_id: u3.id, confirmed: false)
-f5 = Friendship.create!(user_id: u4.id, friend_id: u2.id, confirmed: false)
-f6 = Friendship.create!(user_id: u3.id, friend_id: u5.id, confirmed: true)
-f7 = Friendship.create!(user_id: u3.id, friend_id: u6.id, confirmed: true)
-f8 = Friendship.create!(user_id: u7.id, friend_id: u3.id, confirmed: true)
-f9 = Friendship.create!(user_id: u8.id, friend_id: u3.id, confirmed: false)
-f10 = Friendship.create!(user_id: u9.id, friend_id: u3.id, confirmed: false)
-f11 = Friendship.create!(user_id: u10.id, friend_id: u3.id, confirmed: false)
-f12 = Friendship.create!(user_id: u11.id, friend_id: u3.id, confirmed: true)
+f3 = Friendship.create!(user_id: u2.id, friend_id: u3.id, confirmed: false)
 
 
 puts "Seeding pin groups..."
-pg1 = PinGroup.create(user_id: u3.id, title: "Test Group", description: "Group for testing if groups are working", marker_color: 1)
+pg1 = PinGroup.create(user_id: u3.id, title: "Test Group", description: "Group for testing if groups are working", marker_color: 3)
 
 
 puts "Seeding pins..."
@@ -47,8 +29,7 @@ p1 = Pin.create!(user_id: u3.id,
                 title: "Home", 
                 description: "My home!", 
                 address: "510 Briar Hill Rd, Louisville, KY 40206",
-                visit_date: DateTime.new(2015, 6, 25, 8, 5, 12),
-                pin_group_id: pg1.id)
+                visit_date: DateTime.new(2015, 6, 25, 8, 5, 12))
 p2 = Pin.create!(user_id: u3.id,
                 latitude: "38.25118318744765", 
                 longitude: "-85.65429221966407", 
@@ -62,28 +43,32 @@ p3 = Pin.create!(user_id: u3.id,
                 title: "Powell Point - Grand Canyon", 
                 description: "Beautiful Grand Canyon views from the south rim. Henry almost fell in!", 
                 address: "Grand Canyon Village, AZ 86023",
-                visit_date: DateTime.new(2018, 10, 5, 8, 5, 12))
+                visit_date: DateTime.new(2018, 10, 5, 8, 5, 12),
+                pin_group_id: pg1.id)
 p4 = Pin.create!(user_id: u3.id,
                 latitude: "36.982191595620954", 
                 longitude: "-110.11184524806298", 
                 title: "Monument Valley Visitor Center", 
-                description: "Really cool exhibits and beautiful landscape. Feels like you're on mars.", 
+                description: "Really cool exhibits and beautiful landscape. Feels like you're on Mars.", 
                 address: "US 163 Scenic, Oljato-Monument Valley, AZ 84536",
-                visit_date: DateTime.new(2018, 10, 7, 8, 8, 12))
+                visit_date: DateTime.new(2018, 10, 7, 8, 8, 12),
+                pin_group_id: pg1.id)
 p5 = Pin.create!(user_id: u3.id,
                 latitude: "38.57329967781957", 
                 longitude: "-109.55079184032616", 
                 title: "Downtown Moab", 
                 description: "Wacky national park town with cool shops and restaurants", 
                 address: "1 W Center St, Moab, UT 84532",
-                visit_date: DateTime.new(2018, 10, 10, 8, 8, 12))
+                visit_date: DateTime.new(2018, 10, 10, 8, 8, 12),
+                pin_group_id: pg1.id)
 p6 = Pin.create!(user_id: u3.id,
                 latitude: "38.57521734234044", 
                 longitude: "-107.74162644447564", 
                 title: "Black Canyon of the Gunnison National Park", 
                 description: "Spectacular canyon! Definitely an underrated national park. So glad we decided to visit", 
                 address: "Montrose County, CO",
-                visit_date: DateTime.new(2018, 10, 13, 8, 8, 12))
+                visit_date: DateTime.new(2018, 10, 13, 8, 8, 12),
+                pin_group_id: pg1.id)
 p7 = Pin.create!(user_id: u3.id,
                 latitude: "38.481291734948876", 
                 longitude: "-107.87353274614817", 
@@ -109,7 +94,7 @@ p10 = Pin.create!(user_id: u3.id,
                 latitude: "47.60494313271948", 
                 longitude: "-122.3340378386255", 
                 title: "Corporate HQ", 
-                description: "Presentation to senior leadership went well. There's a good chance our project will get funding!!!", 
+                description: "Presentation to senior leadership went well.", 
                 address: "999 3rd Ave, Seattle, WA 98104",
                 visit_date: DateTime.new(2019, 4, 12, 8, 5, 12))
 p11 = Pin.create!(user_id: u3.id,
@@ -119,70 +104,28 @@ p11 = Pin.create!(user_id: u3.id,
                 description: "An absolute icon. A must visit!", 
                 address: "London SW1A 0AA, United Kingdom",
                 visit_date: DateTime.new(2019, 4, 12, 8, 5, 12))
-p12 = Pin.create!(user_id: u9.id,
-                latitude: "37.18616717800008", 
-                longitude: "-86.10006127436583", 
-                title: "Home Sweet Home", 
-                description: "So glad I moved here!", 
-                address: "Mammoth Cave, KY 42259",
-                visit_date: DateTime.new(2021, 6, 17, 8, 5, 12))
-p13 = Pin.create!(user_id: u9.id,
-                latitude: "43.09061365474766", 
-                longitude: "40.80997972464877", 
-                title: "Veryovkina Cave", 
-                description: "Deepest cave in the world. But can I go deeper?", 
-                address: "Chanba St, Akhali Atoni, Georgia",
-                visit_date: DateTime.new(2019, 7, 17, 8, 5, 12))
-p14 = Pin.create!(user_id: u9.id,
-                latitude: "37.17453483684698", 
-                longitude: "-109.92712730346707", 
-                title: "Goosenecks State Park", 
-                description: "Beautifully carved canyon of the San Juan River.", 
-                address: "UT-316, Mexican Hat, UT 84531",
-                visit_date: DateTime.new(2018, 10, 6, 8, 5, 12))
-p15 = Pin.create!(user_id: u3.id,
+p12 = Pin.create!(user_id: u3.id,
                 latitude: "25.726469598411448", 
                 longitude: "-80.2507775210849", 
                 title: "Mom & Dad's house", 
                 description: "My childhood home", 
                 address: "3575 William Ave, Miami, FL 33133",
                 visit_date: DateTime.new(1994, 5, 10, 8, 5, 12))
-p16 = Pin.create!(user_id: u12.id,
-                latitude: "36.60134997529219", 
-                longitude: "-121.89815497018184", 
-                title: "Home", 
-                description: "My home with my awesome dog that sits in my lap on zoom calls", 
-                address: "359 Larkin St, Monterey, CA 93940",
-                visit_date: DateTime.new(2020, 8, 30, 8, 5, 12))
-p17 = Pin.create!(user_id: u12.id,
-                latitude: "37.49552683294501", 
-                longitude: "-122.49746930162418", 
-                title: "Mavericks Beach", 
-                description: "Legendary big wave surf spot", 
-                address: "300 W Point Ave, Half Moon Bay, CA 94019",
-                visit_date: DateTime.new(2020, 11, 6, 8, 5, 12))
-p18 = Pin.create!(user_id: u12.id,
-                latitude: "39.952390148472844", 
-                longitude: "-75.16360770432331", 
-                title: "Phil-adelphia", 
-                description: "It's an honor to have a major city named after me!", 
-                address: "1400 John F Kennedy Blvd, Philadelphia, PA 19107",
-                visit_date: DateTime.new(2017, 2, 17, 8, 5, 12))
-p19 = Pin.create!(user_id: u1.id,
+p13 = Pin.create!(user_id: u1.id,
                 latitude: "32.8326766986214", 
                 longitude: "-96.79675198770147", 
                 title: "My Home", 
                 description: "Was so excited to move in! What a great location.", 
                 address: "3800 Beverly Dr, Dallas, TX 75205",
                 visit_date: DateTime.new(2010, 5, 27, 8, 5, 12))
-p20 = Pin.create!(user_id: u1.id,
+p14 = Pin.create!(user_id: u1.id,
                 latitude: "21.155824652158536", 
                 longitude: "-86.7995998518883", 
                 title: "Cancun Hotel", 
                 description: "Great vacation to Mexico! This place had an awesome continental breakfast.", 
                 address: "Kukulcan Boulevard, Zona Hotelera, 77500 Cancún, Q.R., Mexico",
                 visit_date: DateTime.new(2014, 8, 16, 8, 5, 12))
-p21 = Pin.create!(user_id: u1.id,
+p15 = Pin.create!(user_id: u1.id,
                 latitude: "29.95210742484781", 
                 longitude: "-90.06826281988995", 
                 title: "Business Trip", 

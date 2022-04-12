@@ -103,7 +103,6 @@ function HomePage({ user }) {
     useEffect(() => {
         getMyPins()
         getGroups()
-        // getRoutes()
         getFriends()
     },[homePageReset])
 
@@ -113,7 +112,6 @@ function HomePage({ user }) {
         fetch(`/my_pins`)
         .then(r => r.json())
         .then(data => {
-            console.log(data)
             setPins(data)
             setTitleDisplay(`My Pins`)
             setPinsEditable(true)
@@ -126,7 +124,6 @@ function HomePage({ user }) {
         fetch(`/my_groups`)
         .then(r => r.json())
         .then(data => {
-            console.log(data)
             setGroups(data)
         })
     }
@@ -135,7 +132,6 @@ function HomePage({ user }) {
         fetch(`/friends`)
         .then(r => r.json())
         .then(data => {
-            console.log(data)
             setFriends(data)
         })
     }
@@ -147,7 +143,6 @@ function HomePage({ user }) {
         fetch(`/my_pins`)
         .then(r => r.json())
         .then(data => {
-            console.log(data)
             setPins(data.filter(pin => pin.pin_group_id === group_id))
             setSelectedGroup(groups.find(group => group.id === group_id))
             setTitleDisplay(groups.find(group => group.id === group_id).title)
@@ -187,12 +182,12 @@ function HomePage({ user }) {
             return(
                 <>
                     <MenuItem className={classes.newGroupButton} onClick={e => createGroup()} disableRipple>Create New Group</MenuItem>
-                    {!!groups.length ? groups.map(group => <MenuItem onClick={e => getGroupPins(group.id)} disableRipple>{group.title}</MenuItem>) : <MenuItem disableRipple>No groups yet...</MenuItem>}
+                    {!!groups.length ? groups.map(group => <MenuItem key={group.id} onClick={e => getGroupPins(group.id)} disableRipple>{group.title}</MenuItem>) : <MenuItem disableRipple>No groups yet...</MenuItem>}
                 </>
             )
         }
         if (anchorEl.id === "friends") {
-            return(!!friends.length ? friends.map(friend => <MenuItem onClick={e => getFriendPins(e, friend)} disableRipple>{friend.user_name}</MenuItem>) : <MenuItem disableRipple>No friends yet...</MenuItem>)
+            return(!!friends.length ? friends.map(friend => <MenuItem key={friend.id} onClick={e => getFriendPins(e, friend)} disableRipple>{friend.user_name}</MenuItem>) : <MenuItem disableRipple>No friends yet...</MenuItem>)
         }
     }
     

@@ -15,7 +15,6 @@ import Moment from 'moment'
 import { FormControl, TextField, Button, Select, MenuItem, Box } from '@mui/material';
 import ModeEditSharpIcon from '@mui/icons-material/ModeEditSharp';
 import DatePicker from '@mui/lab/DatePicker';
-import { color } from "@mui/system"
 
 
 const useStyles = makeStyles((theme) => ({
@@ -368,7 +367,7 @@ function PinMap({ user, pins, groups, getMyPins, pinsEditable, selectedPin, setS
                                     onChange={e => setEditedPin({...editedPin, pin_group_id: e.target.value})}
                                 >
                                     <MenuItem value={-1}>No Group</MenuItem>
-                                    {groups.map(group => <MenuItem value={group.id}>{group.title}</MenuItem>)}
+                                    {groups.map(group => <MenuItem key={group.id} value={group.id}>{group.title}</MenuItem>)}
                                 </Select>
                             : null}
                         </div>
@@ -439,7 +438,7 @@ function PinMap({ user, pins, groups, getMyPins, pinsEditable, selectedPin, setS
                                         onChange={e => setCreatedPin({...createdPin, pin_group_id: e.target.value})}
                                     >
                                         <MenuItem value={-1}>No Group</MenuItem>
-                                        {groups.map(group => <MenuItem value={group.id}>{group.title}</MenuItem>)}
+                                        {groups.map(group => <MenuItem key={group.id} value={group.id}>{group.title}</MenuItem>)}
                                     </Select>
                                 : null}
                             </div>
