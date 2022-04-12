@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  namespace :api do
     resources :pin_groups, only: [:create, :update, :destroy]
     resources :friendships, only: [:destroy, :update, :create]
     resources :pins, only: [:show, :update, :create, :destroy]
@@ -17,7 +16,4 @@ Rails.application.routes.draw do
     post "/userSearch", to: "users#search"
     # Defines the root path route ("/")
     # root "articles#index"
-  end
-
-  get "*path", to: "fallback#index", constraints: ->(req) { !req.xhr? && req.format.html? }
 end
