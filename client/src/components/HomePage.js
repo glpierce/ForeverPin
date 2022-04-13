@@ -101,7 +101,7 @@ function HomePage({ user }) {
     const [selectedGroup, setSelectedGroup] = useState({})
 
     useEffect(() => {
-        console.log(process.env)
+        console.log(this)
         getMyPins()
         getGroups()
         getFriends()
