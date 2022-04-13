@@ -157,7 +157,7 @@ function PinMap({ user, pins, groups, getMyPins, pinsEditable, selectedPin, setS
     }
 
     function searchLocation() {
-        fetch(`http://dev.virtualearth.net/REST/v1/Locations?query=${searchQuery}&maxResults=1&key=${process.env.REACT_APP_BING_TOKEN}`)
+        fetch(`https://dev.virtualearth.net/REST/v1/Locations?query=${searchQuery}&maxResults=1&key=${process.env.REACT_APP_BING_TOKEN}`)
         .then(resp => resp.json())
         .then(data => {
             setSelectedPin(null)
@@ -181,7 +181,7 @@ function PinMap({ user, pins, groups, getMyPins, pinsEditable, selectedPin, setS
         if (!!Object.keys(newPinCoords).length) {
             setNewPinCoords({})
         }
-        fetch(`http://dev.virtualearth.net/REST/v1/locationrecog/${coords.latitude},${coords.longitude}?key=${process.env.REACT_APP_BING_TOKEN}&includeEntityTypes=address&output=json`)
+        fetch(`https://dev.virtualearth.net/REST/v1/locationrecog/${coords.latitude},${coords.longitude}?key=${process.env.REACT_APP_BING_TOKEN}&includeEntityTypes=address&output=json`)
         .then(resp => resp.json())
         .then(data => {
             const cleanData = data.resourceSets[0].resources[0]
