@@ -1,4 +1,3 @@
-import { cardClasses } from "@mui/material"
 import React, { useState, useEffect } from "react"
 import ReactMapGL, { Marker, Popup, NavigationControl, GeolocateControl } from "react-map-gl"
 import PinMarkerRed from "../assets/PinMarkerRed.png"
@@ -170,7 +169,6 @@ function PinMap({ user, pins, groups, getMyPins, pinsEditable, selectedPin, setS
 
     function getCurrentLocation() {
         navigator.geolocation.getCurrentPosition((position) => {
-            console.log(position)
             getAddressFromCoords({latitude: position.coords.latitude, longitude: position.coords.longitude})
         }, (error) => {
             alert(`${error.message}. No pin for you!`)

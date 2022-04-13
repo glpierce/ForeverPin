@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react"
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@mui/material/Button';
-import { TextField } from "@mui/material";
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
@@ -101,7 +100,6 @@ function HomePage({ user }) {
     const [selectedGroup, setSelectedGroup] = useState({})
 
     useEffect(() => {
-        console.log(process.env)
         getMyPins()
         getGroups()
         getFriends()
