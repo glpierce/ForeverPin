@@ -5,30 +5,30 @@ import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import ForeverPinLogo from "../assets/ForeverPin.png"
 import { useHistory } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
     headerContainer: {
-      height: 55,
+      height: 80,
       display: "flex",
       flexDirection: "row",
-      width: "calc(100vw - 25px)"
+      width: "calc(100vw - 25px)",
     },
     titleContainer: {
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    logo: {
+      height: 80
+    },
+    menuContainer: {
       flexGrow: 1,
       flexBasis: "33%",
       display: "flex",
       flexWrap: "nowrap",
-      justifyContent: "center",
-      alignItems: "center"
-    },
-    menuContainer: {
-        flexGrow: 1,
-        flexBasis: "33%",
-        display: "flex",
-        flexWrap: "nowrap",
-        justifyContent: "right",
-        alignItems: "center"
+      justifyContent: "right",
+      alignItems: "center",
     },
     placeholder: {
       flexGrow: 1,
@@ -114,56 +114,53 @@ function Header({ user, setUser }) {
 
     function renderAccountMenu() {
         return(
-            <>
-                <Button
-                    id="demo-customized-button"
-                    aria-controls={open ? 'demo-customized-menu' : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={open ? 'true' : undefined}
-                    variant="contained"
-                    disableElevation
-                    style={{textTransform: 'none', backgroundColor: "#083C5A"}}
-                    onClick={handleClick}
-                    endIcon={<KeyboardArrowDownIcon />}
-                >
-                    {user.user_name}
-                </Button>
-                <StyledMenu
-                    id="demo-customized-menu"
-                    MenuListProps={{
-                    'aria-labelledby': 'demo-customized-button',
-                    }}
-                    anchorEl={anchorEl}
-                    open={open}
-                    onClose={handleClose}
-                >
-                    <MenuItem onClick={(e) => pageChange(e, "/")} disableRipple>
-                        Home
-                    </MenuItem>
-                    <MenuItem onClick={(e) => pageChange(e, "/my_account")} disableRipple>
-                        My Account
-                    </MenuItem>
-                    <MenuItem onClick={(e) => pageChange(e, "/friends")} disableRipple>
-                        Friends
-                    </MenuItem>
-                    <MenuItem onClick={(e) => logOut()} disableRipple>
-                        Log out
-                    </MenuItem>
-                </StyledMenu>
-            </>
+          <div className={classes.menuContainer}>
+              <Button
+                  id="demo-customized-button"
+                  aria-controls={open ? 'demo-customized-menu' : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={open ? 'true' : undefined}
+                  variant="contained"
+                  disableElevation
+                  style={{textTransform: 'none', backgroundColor: "#083C5A"}}
+                  onClick={handleClick}
+                  endIcon={<KeyboardArrowDownIcon />}
+              >
+                  {user.user_name}
+              </Button>
+              <StyledMenu
+                  id="demo-customized-menu"
+                  MenuListProps={{
+                  'aria-labelledby': 'demo-customized-button',
+                  }}
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleClose}
+              >
+                  <MenuItem onClick={(e) => pageChange(e, "/")} disableRipple>
+                      Home
+                  </MenuItem>
+                  <MenuItem onClick={(e) => pageChange(e, "/my_account")} disableRipple>
+                      My Account
+                  </MenuItem>
+                  <MenuItem onClick={(e) => pageChange(e, "/friends")} disableRipple>
+                      Friends
+                  </MenuItem>
+                  <MenuItem onClick={(e) => logOut()} disableRipple>
+                      Log out
+                  </MenuItem>
+              </StyledMenu>
+          </div>
         )
     }
 
     return(
-        <div className={classes.headerContainer}>
-          <div className={classes.placeholder}>
-          </div>
+        <div className={classes.headerContainer} style={{justifyContent: (!!Object.keys(user).length ? "space-between" : "space-around")}}>
+          {!!Object.keys(user).length ? <div className={classes.placeholder}></div> : <></>}
           <div className={classes.titleContainer}>
-              <h1 style={{margin: 0}}>ForeverPin</h1>
+              <img className={classes.logo} src={ForeverPinLogo} alt="Forever Pin"/>
           </div>
-          <div className={classes.menuContainer}>
-              {!!Object.keys(user).length ? renderAccountMenu() : <></>}
-          </div>
+          {!!Object.keys(user).length ? renderAccountMenu() : <></>}
         </div>
     )
 }
