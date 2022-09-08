@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
-function PinMap({ user, pins, groups, getMyPins, pinsEditable, selectedPin, setSelectedPin, titleDisplay, editGroup, selectedGroup }) {
+function PinMap({ user, pins, groups, getMyPins, pinsEditable, selectedPin, setSelectedPin, titleDisplay, editGroup, selectedGroup, editableGroup }) {
     const classes = useStyles();
     const [editPin, setEditPin] = useState(false)
     const [editedPin, setEditedPin] = useState(null)
@@ -484,7 +484,7 @@ function PinMap({ user, pins, groups, getMyPins, pinsEditable, selectedPin, setS
             <div className={classes.mapHeader}>
                 <div className={classes.mapTitle}>
                     <h2 style={{marginLeft: 10, marginBottom: 0}}>{titleDisplay}</h2>
-                    {!!Object.keys(selectedGroup).length ?
+                    {!!Object.keys(selectedGroup).length && editableGroup ?
                         <Button variant="outlined" onClick={e => editGroup()} style={{height: 22, minWidth: 0, width: 16, marginLeft: 15, color: "#083C5A", borderColor: "#083C5A", textTransform: 'none'}}>
                             <ModeEditSharpIcon style={{height: 16}}/>
                         </Button>

@@ -98,6 +98,7 @@ function HomePage({ user }) {
     const [pinsEditable, setPinsEditable] = useState(true)
     const [selectedPin, setSelectedPin] = useState(null)
     const [selectedGroup, setSelectedGroup] = useState({})
+    const [editableGroup, setEditableGroup] = useState(false)
 
     useEffect(() => {
         getMyPins()
@@ -136,6 +137,7 @@ function HomePage({ user }) {
     }
 
     function getGroupPins(group_id) {
+        setEditableGroup(true)
         setAnchorEl(null)
         setMapToggle(true)
         setEditedGroup({})
@@ -151,6 +153,7 @@ function HomePage({ user }) {
     }
 
     function getFriendPins(e, friend) {
+        setEditableGroup(false)
         setMapToggle(true)
         setAnchorEl(null)
         fetch(`/pins/${friend.id}`)
@@ -226,7 +229,7 @@ function HomePage({ user }) {
                         </AppBar>
                     </div>
                     <div className={classes.mapContainer}>
-                        {!!mapToggle && !!pins ? <PinMap user={user} pins={pins} groups={groups} getMyPins={getMyPins} pinsEditable={pinsEditable} selectedPin={selectedPin} setSelectedPin={setSelectedPin} titleDisplay={titleDisplay} editGroup={editGroup} selectedGroup={selectedGroup}/> : null}
+                        {!!mapToggle && !!pins ? <PinMap user={user} pins={pins} groups={groups} getMyPins={getMyPins} pinsEditable={pinsEditable} selectedPin={selectedPin} setSelectedPin={setSelectedPin} titleDisplay={titleDisplay} editGroup={editGroup} selectedGroup={selectedGroup} editableGroup={editableGroup}/> : null}
                         {!mapToggle && !!Object.keys(editedGroup).length ? <EditGroup setPins={setPins} createGroupToggle={createGroupToggle} editedGroup={editedGroup} setEditedGroup={setEditedGroup} homePageReset={homePageReset} setHomePageReset={setHomePageReset} setSelectedGroup={setSelectedGroup} /> : null}
                     </div>
                 </div>
