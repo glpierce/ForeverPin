@@ -423,7 +423,7 @@ function PinMap({ user, pins, groups, getMyPins, pinsEditable, selectedPin, setS
                                     size="small"
                                     label="Visit Date"
                                     maxDate={new Date()}
-                                    value={new Date()}
+                                    value={createdPin.visit_date}
                                     onChange={e => setCreatedPin({...createdPin, visit_date: e})}
                                     renderInput={(params) => <TextField {...params} />}
                                 />
