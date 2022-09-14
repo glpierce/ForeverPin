@@ -10,6 +10,7 @@ import { useHistory } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
     headerContainer: {
+      marginTop: 10,
       height: 80,
       display: "flex",
       flexDirection: "row",

@@ -19,14 +19,14 @@ const useStyles = makeStyles((theme) => ({
         display: "flex",
         justifyContent: "center",
         width: 200,
-        height: "calc(100vh - 94px)",
+        height: "calc(100vh - 104px)",
     },
     toolBar: {
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-evenly",
         alignItems: "center",
-        height: "calc(100vh - 94px)",
+        height: "calc(100vh - 104px)",
     },
     navElement: {
         width: 200
@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
     },
     mapContainer: {
         marginLeft: 10,
-        height: "calc(100vh - 80px)",
+        height: "calc(100vh - 90px)",
     },
     newGroupButton: {
         textDecoration: "underline"

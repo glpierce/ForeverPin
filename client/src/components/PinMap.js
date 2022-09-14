@@ -493,7 +493,7 @@ function PinMap({ user, pins, groups, getMyPins, pinsEditable, selectedPin, setS
                 {!!pinsEditable && !Object.keys(newPinCoords).length ? renderPinFunctionality() : null}
                 {!!Object.keys(newPinCoords).length ? renderNewPinFunctionality() : null}
             </div>
-            <ReactMapGL {...viewState} mapboxAccessToken={process.env.REACT_APP_MAPBOX_TOKEN} onMove={evt => setViewState(evt.viewState)} style={{width: "calc(100vw - 235px", height: "calc(100vh - 154px"}} mapStyle="mapbox://styles/glpierce174/cl0h3s1v8004t15m6qw98t5oj">
+            <ReactMapGL {...viewState} mapboxAccessToken={process.env.REACT_APP_MAPBOX_TOKEN} onMove={evt => setViewState(evt.viewState)} style={{width: "calc(100vw - 235px", height: "calc(100vh - 164px"}} mapStyle="mapbox://styles/glpierce174/cl0h3s1v8004t15m6qw98t5oj">
                 {!!pins.length ? renderPins() : null}
                 {!!Object.keys(createdPin).length ? renderSearchResult() : null}
                 {!!selectedPin ? renderPopup() : null}
